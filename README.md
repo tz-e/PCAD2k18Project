@@ -1,1 +1,1 @@
-PCAD2k18Project
+Just a pretty ugly school project
