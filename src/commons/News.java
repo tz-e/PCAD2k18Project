@@ -8,18 +8,22 @@ public class News implements NewsInterface {
 		_text=text;
 		
 	}
-	public TopicInterface get_topic() {
-		return _topic;
-	}
-	public void set_topic(TopicInterface _topic) {
+
+	public void SetTopic(TopicInterface _topic) {
 		this._topic = _topic;
 	}
-	public String get_text() {
-		return _text;
+	@Override
+	public TopicInterface GetTopic() {
+		return _topic;
+	}
+	public void SetText(String _text) {
+		this._text = _text;
 	}
 
-	public void set_text(String _text) {
-		this._text = _text;
+	@Override
+	public String GetText() {
+		return _text;
+
 	}
 	
 }

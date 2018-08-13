@@ -5,5 +5,6 @@ package commons;
  * @author Daniele Atzeni
  */
 public interface NewsInterface {
-
+	public TopicInterface GetTopic();
+	public String GetText();
 }

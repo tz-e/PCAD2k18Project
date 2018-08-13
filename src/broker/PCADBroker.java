@@ -5,17 +5,20 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import client.ClientInterface;
 import commons.NewsInterface;
+import commons.SubBrokerInterface;
+import commons.SubInterface;
+import commons.Topic;
 import commons.TopicInterface;
-import subs.SubInterface;
 
-public class PCADBroker implements PCADBrokerInterface{
+public class PCADBroker implements PCADBrokerInterface, SubBrokerInterface{
 
 	private ConcurrentSkipListSet<TopicInterface> topicList;
-	private ConcurrentHashMap<TopicInterface, List<SubInterface>> su;
+	private ConcurrentHashMap<TopicInterface, List<ClientInterface>> subs;
+	
 	@Override
-	public boolean Unsubscribe(SubInterface sub, TopicInterface topic) {
-		
+	public boolean Unsubscribe(ClientInterface sub, TopicInterface topic) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -27,21 +30,45 @@ public class PCADBroker implements PCADBrokerInterface{
 	}
 
 	@Override
-	public boolean Connect(SubInterface sub) {
+	public boolean Connect(ClientInterface sub) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean Disconnect(SubInterface sub) {
+	public boolean Disconnect(ClientInterface sub) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void request(String x, SubInterface stub) throws RemoteException {
+	public void Subscribe(PCADBrokerInterface broker, Topic topic) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void StopNotification(PCADBrokerInterface broker) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean Subscribe(ClientInterface sub, TopicInterface topic) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void StopNotification(ClientInterface client) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+
+	
+
+	
 
 }
