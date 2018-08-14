@@ -1,11 +1,14 @@
 package broker;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import client.ClientInterface;
+import commons.ConcurrentList;
 import commons.NewsInterface;
 import commons.SubBrokerInterface;
 import commons.SubInterface;
@@ -14,7 +17,7 @@ import commons.TopicInterface;
 
 public class PCADBroker implements PCADBrokerInterface, SubBrokerInterface{
 
-	private ConcurrentSkipListSet<TopicInterface> topicList;
+	private ConcurrentList<TopicInterface> topicList;
 	private ConcurrentHashMap<TopicInterface, List<ClientInterface>> subs;
 	@Override
 	public void Subscribe(PCADBrokerInterface broker, Topic topic) {
@@ -23,8 +26,19 @@ public class PCADBroker implements PCADBrokerInterface, SubBrokerInterface{
 	}
 	@Override
 	public boolean Subscribe(ClientInterface sub, TopicInterface topic) {
-		// TODO Auto-generated method stub
-		return false;
+		if(!topicList.contains(topic)) { 
+			/**
+			 * Se non esiste il topic allora non esiste neanche nella hashMap**/
+			topicList.add(topic);
+			subs.put(topic,new LinkedList<ClientInterface>(Arrays.asList(sub)));
+			return true;
+		}
+		/**
+		 * Il topic esiste e il sub e' gia' iscritto, ritorno false**/
+		if(subs.get(topic).contains(sub)) return false; 
+		subs.get(topic).add(sub);
+		return true;
+		
 	}
 
 	@Override
