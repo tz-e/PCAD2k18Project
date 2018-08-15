@@ -17,28 +17,42 @@ import commons.TopicInterface;
 
 public class PCADBroker implements PCADBrokerInterface, SubBrokerInterface{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ConcurrentList<TopicInterface> topicList;
-	private ConcurrentHashMap<TopicInterface, List<ClientInterface>> subs;
+	private ConcurrentHashMap<Object, Boolean> subList;
+	private ConcurrentHashMap<TopicInterface, List<Object>> subscribers;
+	public PCADBroker() {
+		topicList=new ConcurrentList<TopicInterface>();
+		subList=new ConcurrentHashMap<Object, Boolean>();
+		subscribers=new ConcurrentHashMap<TopicInterface, List<Object>>(); // temporaneamente la lista e' di object, successivamente creero' un'interfaccia 
+	}
+	
 	@Override
-	public void Subscribe(PCADBrokerInterface broker, Topic topic) {
-		// TODO Auto-generated method stub
+	public boolean Subscribe(PCADBrokerInterface broker, Topic topic) {
+		return actualSubscribe(broker, topic);
 		
 	}
 	@Override
 	public boolean Subscribe(ClientInterface sub, TopicInterface topic) {
+		return actualSubscribe(sub, topic);
+	}
+
+	private boolean actualSubscribe(Object sub, TopicInterface topic) {
 		if(!topicList.contains(topic)) { 
-			/**
+			/**value
 			 * Se non esiste il topic allora non esiste neanche nella hashMap**/
 			topicList.add(topic);
-			subs.put(topic,new LinkedList<ClientInterface>(Arrays.asList(sub)));
+			subscribers.put(topic,new LinkedList<Object>(Arrays.asList(sub)));
 			return true;
 		}
 		/**
 		 * Il topic esiste e il sub e' gia' iscritto, ritorno false**/
-		if(subs.get(topic).contains(sub)) return false; 
-		subs.get(topic).add(sub);
+		if(subscribers.get(topic).contains(sub)) return false; 
+		subscribers.get(topic).add(sub);
 		return true;
-		
 	}
 
 	@Override
@@ -72,8 +86,9 @@ public class PCADBroker implements PCADBrokerInterface, SubBrokerInterface{
 
 	@Override
 	public boolean Connect(ClientInterface sub) {
-		// TODO Auto-generated method stub
-		return false;
+		if(subList.containsKey(sub)) return false;
+		subList.put(sub, true); //aggiungere effettivamente il socket del client
+		return true;
 	}
 
 	@Override
