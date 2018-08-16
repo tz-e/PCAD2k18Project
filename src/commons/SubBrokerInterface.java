@@ -8,9 +8,5 @@ import client.ClientInterface;
  * @author Daniele Atzeni
  */
 public interface SubBrokerInterface {
-	public boolean Subscribe(PCADBrokerInterface broker, Topic topic);
-	public void StopNotification(PCADBrokerInterface broker);
-	public boolean Unsubscribe(PCADBrokerInterface broker, TopicInterface topic);
 
-	
 }

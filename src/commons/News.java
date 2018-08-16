@@ -6,7 +6,6 @@ public class News implements NewsInterface {
 	public News(TopicInterface topic, String text) {
 		_topic=topic;
 		_text=text;
-		
 	}
 
 	public void SetTopic(TopicInterface _topic) {

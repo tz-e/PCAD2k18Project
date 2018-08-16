@@ -15,37 +15,39 @@ import commons.SubInterface;
 import commons.Topic;
 import commons.TopicInterface;
 
-public class PCADBroker implements PCADBrokerInterface, SubBrokerInterface{
+public class PCADBroker implements PCADBrokerInterface{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private ConcurrentList<TopicInterface> topicList;
-	private ConcurrentHashMap<Object, Boolean> subList;
-	private ConcurrentHashMap<TopicInterface, List<Object>> subscribers;
+	private ConcurrentHashMap<SubInterface, Boolean> subList;
+	private ConcurrentHashMap<TopicInterface, List<SubInterface>> subscribers;
 	public PCADBroker() {
 		topicList=new ConcurrentList<TopicInterface>();
-		subList=new ConcurrentHashMap<Object, Boolean>();
-		subscribers=new ConcurrentHashMap<TopicInterface, List<Object>>(); // temporaneamente la lista e' di object, successivamente creero' un'interfaccia 
+		subList=new ConcurrentHashMap<SubInterface, Boolean>();
+		subscribers=new ConcurrentHashMap<TopicInterface, List<SubInterface>>(); // temporaneamente la lista e' di object, successivamente creero' un'interfaccia 
 	}
-	
+	/**
+	 * SUBSCRIBE
+	 * **/
 	@Override
 	public boolean Subscribe(PCADBrokerInterface broker, Topic topic) {
 		return actualSubscribe(broker, topic);
-		
 	}
 	@Override
 	public boolean Subscribe(ClientInterface sub, TopicInterface topic) {
 		return actualSubscribe(sub, topic);
 	}
 
-	private boolean actualSubscribe(Object sub, TopicInterface topic) {
+	private boolean actualSubscribe(SubInterface sub, TopicInterface topic) {
 		if(!topicList.contains(topic)) { 
-			/**value
-			 * Se non esiste il topic allora non esiste neanche nella hashMap**/
+			/**
+			 * Se non esiste il topic allora non esiste neanche nella hashMap
+			 * **/
 			topicList.add(topic);
-			subscribers.put(topic,new LinkedList<Object>(Arrays.asList(sub)));
+			subscribers.put(topic,new LinkedList<SubInterface>(Arrays.asList(sub)));
 			return true;
 		}
 		/**
@@ -55,46 +57,77 @@ public class PCADBroker implements PCADBrokerInterface, SubBrokerInterface{
 		return true;
 	}
 
+	/**
+	 * STOP NOTIFICATION
+	 * **/
 	@Override
-	public void StopNotification(PCADBrokerInterface broker) {
-		// TODO Auto-generated method stub
-		
+	public boolean StopNotification(PCADBrokerInterface broker) {
+		return actualStopNotification(broker);	
 	}
 
 	@Override
-	public void StopNotification(ClientInterface client) {
-		// TODO Auto-generated method stub
-		
+	public boolean StopNotification(ClientInterface client) {
+		return actualStopNotification(client);
 	}
+
+	private boolean actualStopNotification(SubInterface client) {
+		if(subList.containsKey(client))	subList.put(client, false); 
+		else return false;
+		return true;
+	}
+	
+	/**
+	 * UNSUBSCRIBE
+	 * **/
 	@Override
 	public boolean Unsubscribe(ClientInterface sub, TopicInterface topic) {
-		// TODO Auto-generated method stub
-		return false;
+		return actualUnsubscribe(sub, topic);
 	}
 	
 	@Override
 	public boolean Unsubscribe(PCADBrokerInterface broker, TopicInterface topic) {
-		// TODO Auto-generated method stub
-		return false;
+		return actualUnsubscribe(broker, topic);
 	}
-
+	
+	private boolean actualUnsubscribe(Object sub, TopicInterface topic) {
+		if(!subscribers.get(topic).contains(sub)) return false;
+		subscribers.get(topic).remove(sub);
+		return true;
+	}
+	
 	@Override
-	public void PublishNews(NewsInterface news, TopicInterface topic) {
-		// TODO Auto-generated method stub
+	public void PublishNews(NewsInterface news, TopicInterface topic) throws Exception {
+		if(!subscribers.containsKey(topic)) throw new Exception();
+		for(SubInterface sub: subscribers.get(topic)) {
+			sub.notifyClient(news);
+		}
 		
 	}
 
 	@Override
 	public boolean Connect(ClientInterface sub) {
 		if(subList.containsKey(sub)) return false;
-		subList.put(sub, true); //aggiungere effettivamente il socket del client
+		subList.put(sub, true); 
 		return true;
 	}
 
 	@Override
 	public boolean Disconnect(ClientInterface sub) {
+		if(!subList.containsKey(sub)) return false;
+		subList.remove(sub);
+		return deleteFromLists(sub);
+	}
+
+	private boolean deleteFromLists(ClientInterface sub) {
+		for(List<SubInterface> list: subscribers.values()){
+			list.remove(sub);
+		}
+		return true;
+	}
+	@Override
+	public void notifyClient(NewsInterface news) throws RemoteException {
 		// TODO Auto-generated method stub
-		return false;
+		
 	}
 
 
