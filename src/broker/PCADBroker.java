@@ -98,9 +98,9 @@ public class PCADBroker implements PCADBrokerInterface{
 	@Override
 	public void PublishNews(NewsInterface news, TopicInterface topic) throws Exception {
 		if(!subscribers.containsKey(topic)) throw new Exception();
-		for(SubInterface sub: subscribers.get(topic)) {
+		for(SubInterface sub: subscribers.get(topic)) 
 			sub.notifyClient(news);
-		}
+		
 		
 	}
 
@@ -119,15 +119,13 @@ public class PCADBroker implements PCADBrokerInterface{
 	}
 
 	private boolean deleteFromLists(ClientInterface sub) {
-		for(List<SubInterface> list: subscribers.values()){
+		for(List<SubInterface> list: subscribers.values())
 			list.remove(sub);
-		}
 		return true;
 	}
 	@Override
-	public void notifyClient(NewsInterface news) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+	public void notifyClient(NewsInterface news) throws Exception {
+		PublishNews(news, news.GetTopic());
 	}
 
 
