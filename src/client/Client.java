@@ -22,8 +22,8 @@ public class Client implements ClientInterface {
 	public Client() {
 		NewsToRead=new ConcurrentLinkedQueue<NewsInterface>();
 		try {
-			// System.setProperty("java.security.policy","file:./sec.policy");
-			// System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Client/");
+			System.setProperty("java.security.policy","file:./sec.policy");
+			//System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Client/");
 			if (System.getSecurityManager() == null)
 				System.setSecurityManager(new SecurityManager());
 			System.setProperty("java.rmi.server.hostname", "localhost");

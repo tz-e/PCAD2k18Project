@@ -3,6 +3,11 @@ package commons;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Runnable che ha come scopo quello di leggere il contenuto di una coda
+ * ogni tot secondi e stamparne il contenuto
+ * @author Daniele Atzeni
+ * **/
 class Reader implements Runnable {
 	private final ConcurrentLinkedQueue<NewsInterface> queue;
 
