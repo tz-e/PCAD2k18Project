@@ -4,6 +4,8 @@ import broker.PCADBrokerInterface;
 import commons.NewsInterface;
 import commons.Topic;
 import commons.TopicInterface;
+import commons.Reader;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -73,9 +75,11 @@ public class Client implements ClientInterface {
 	@Override
 	public void Subscribe(Topic topic) throws RemoteException {
 		server.Subscribe(stub, topic);
-
 	}
-
-
+	
+	public void ReadNews() {
+		Thread thr1 = new Thread(new Reader(NewsToRead));
+		thr1.start();
+	}
 
 }

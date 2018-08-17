@@ -8,10 +8,10 @@ import java.util.concurrent.TimeUnit;
  * ogni tot secondi e stamparne il contenuto
  * @author Daniele Atzeni
  * **/
-class Reader implements Runnable {
+public class Reader implements Runnable {
 	private final ConcurrentLinkedQueue<NewsInterface> queue;
 
-	Reader(ConcurrentLinkedQueue<NewsInterface> q) {
+	public Reader(ConcurrentLinkedQueue<NewsInterface> q) {
 		queue = q;
 	}
 
