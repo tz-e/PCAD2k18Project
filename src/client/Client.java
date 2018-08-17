@@ -71,10 +71,10 @@ public class Client implements ClientInterface {
 	public void notifyClient(NewsInterface news) throws RemoteException {
 		if (news == null)
 			System.out.println("Handshake ok!");
-		else {
+		else 
 			NewsToRead.add(news);
-			System.out.println("Topic: " + news.GetTopic() + "\\n Testo: " + news.GetText());
-		}
+			//System.out.println("Topic: " + news.GetTopic() + "\\n Testo: " + news.GetText());
+		
 
 	}
 
