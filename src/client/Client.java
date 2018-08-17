@@ -51,7 +51,7 @@ public class Client implements ClientInterface {
 	}
 
 	@Override
-	public void StopNotification(ClientInterface client) throws RemoteException {
+	public void StopNotification() throws RemoteException {
 		server.StopNotification(stub);
 	}
 
@@ -73,7 +73,7 @@ public class Client implements ClientInterface {
 	}
 
 	@Override
-	public void Subscribe(Topic topic) throws RemoteException {
+	public void Subscribe(TopicInterface topic) throws RemoteException {
 		server.Subscribe(stub, topic);
 	}
 	
