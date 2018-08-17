@@ -10,12 +10,12 @@ import commons.Topic;
 import commons.TopicInterface;
 
 public interface ClientInterface extends  SubInterface {
-	public void Subscribe(Topic topic);
-	public void StopNotification(ClientInterface sub);
-	public void Publish(NewsInterface news) throws Exception;
-	public void Unsubscribe(TopicInterface topic);
-	public boolean Connect();
-	public boolean Disconnect();
+	public void Subscribe(Topic topic) throws RemoteException;
+	public void StopNotification(ClientInterface sub) throws RemoteException;
+	public void Publish(NewsInterface news) throws Exception, RemoteException;
+	public void Unsubscribe(TopicInterface topic) throws RemoteException;
+	public boolean Connect() throws RemoteException;
+	public boolean Disconnect() throws RemoteException;
 	
 	
 	

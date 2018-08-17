@@ -39,17 +39,17 @@ public class Client implements ClientInterface {
 	}
 
 	@Override
-	public boolean Connect() {
+	public boolean Connect() throws RemoteException {
 		return server.Connect(stub);
 	}
 
 	@Override
-	public boolean Disconnect() {
+	public boolean Disconnect() throws RemoteException {
 		return server.Disconnect(stub);
 	}
 
 	@Override
-	public void StopNotification(ClientInterface client) {
+	public void StopNotification(ClientInterface client) throws RemoteException {
 		server.StopNotification(stub);
 	}
 
@@ -59,7 +59,7 @@ public class Client implements ClientInterface {
 	}
 
 	@Override
-	public void Unsubscribe(TopicInterface topic) {
+	public void Unsubscribe(TopicInterface topic) throws RemoteException {
 		server.Unsubscribe(stub, topic);
 	}
 
@@ -71,7 +71,7 @@ public class Client implements ClientInterface {
 	}
 
 	@Override
-	public void Subscribe(Topic topic) {
+	public void Subscribe(Topic topic) throws RemoteException {
 		server.Subscribe(stub, topic);
 
 	}
