@@ -1,6 +1,12 @@
 package commons;
 
-public class Topic implements TopicInterface {
+import java.io.Serializable;
+
+public class Topic implements TopicInterface, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String _name;
 	private String _descr;
 	public Topic(String name, String descr) {

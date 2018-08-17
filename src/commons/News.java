@@ -1,6 +1,12 @@
 package commons;
 
-public class News implements NewsInterface {
+import java.io.Serializable;
+
+public class News implements NewsInterface, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private TopicInterface _topic;
 	private String _text;
 	public News(TopicInterface topic, String text) {

@@ -1,5 +1,7 @@
 package mains;
 
+import java.util.Scanner;
+
 import client.Client;
 import commons.News;
 import commons.NewsInterface;
@@ -8,15 +10,21 @@ import commons.TopicInterface;
 
 public class ClientMain1 {
 
-	public static void main() {
+	public static void main(String [] args) {
 		Client client = new Client();
 		boolean exit = false;
+		Scanner sc=new Scanner(System.in);
+		int choice;
+		System.out.println("ehhe");
+
 		TopicInterface topic = new Topic("Sport", "VIVA IL PALLONE");
 		while (!exit) {
 			printMenu();
 			try {
-				switch (System.in.read()) {
+				//choice=System.in.read();
+				switch (sc.nextInt()) {
 				case 1:
+					System.out.println("eheehe");
 					client.Connect();
 					break;
 				case 2:

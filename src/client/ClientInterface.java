@@ -9,7 +9,7 @@ import commons.SubInterface;
 import commons.Topic;
 import commons.TopicInterface;
 
-public interface ClientInterface extends  SubInterface {
+public interface ClientInterface extends  SubInterface, Remote,Serializable {
 	public void Subscribe(TopicInterface topic) throws RemoteException;
 	public void StopNotification() throws RemoteException;
 	public void Publish(NewsInterface news) throws Exception, RemoteException;
