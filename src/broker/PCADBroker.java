@@ -148,4 +148,20 @@ public class PCADBroker implements PCADBrokerInterface {
 		PublishNews(news, news.GetTopic());
 	}
 
+    @Override
+    public int hashCode() {
+        return topicList.hashCode()*subList.hashCode()*subscribers.hashCode()*11;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+       if (!(obj instanceof PCADBroker))
+            return false;
+        if (obj == this)
+            return true;
+
+        PCADBroker br = (PCADBroker) obj;
+        return br.topicList.equals(topicList)&& br.subscribers.equals(subscribers) && br.topicList.equals(topicList);
+    }
+
 }

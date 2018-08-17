@@ -109,4 +109,20 @@ public class ConcurrentList<T> extends AbstractList<T> {
 		return -1;
 	}
 
+    @Override
+    public int hashCode() {
+        return arr.hashCode()*size*maxSize*11;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+       if (!(obj instanceof ConcurrentList))
+            return false;
+        if (obj == this)
+            return true;
+
+        ConcurrentList<T> cl = (ConcurrentList<T>) obj;
+        return cl.arr.equals(arr) && cl.size==size && cl.maxSize==maxSize && cl.freeIndexes.equals(freeIndexes);
+    }
+
 }

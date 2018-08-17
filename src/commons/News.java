@@ -30,5 +30,25 @@ public class News implements NewsInterface, Serializable {
 		return _text;
 
 	}
+
+    @Override
+    public int hashCode() {
+        return 11*_topic.hashCode()*_text.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+       if (!(obj instanceof News))
+            return false;
+        if (obj == this)
+            return true;
+
+        News news = (News) obj;
+        return news._topic.equals(_topic) && news._text.equals(_text);
+    }
+    @Override
+    public String toString() {
+    	return _topic.toString()+"Testo: "+_text.toString();
+    }
 	
 }

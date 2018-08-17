@@ -33,4 +33,23 @@ public class Topic implements TopicInterface, Serializable {
 		_descr=descr;
 	}
 
+    @Override
+    public int hashCode() {
+        return _name.hashCode()*_descr.hashCode()*11;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+       if (!(obj instanceof Topic))
+            return false;
+        if (obj == this)
+            return true;
+
+        Topic topic = (Topic) obj;
+        return topic._descr.equals(_descr) && topic._name.equals(_name);
+    }
+    @Override
+    public String toString() {
+    	return "{{Topic}} Nome: "+_name+" Descrizione: "+ _descr+System.lineSeparator();
+    }
 }
