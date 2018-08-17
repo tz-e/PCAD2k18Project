@@ -22,14 +22,14 @@ public class PCADBroker implements PCADBrokerInterface {
 	/**
 	 * 
 	 */
-	private ConcurrentList<TopicInterface> topicList;
+	// private ConcurrentList<TopicInterface> topicList;
 	private ConcurrentHashMap<SubInterface, Boolean> subList;
 	private ConcurrentHashMap<TopicInterface, List<SubInterface>> subscribers;
 
 	public PCADBroker() {
-		topicList = new ConcurrentList<TopicInterface>();
+		// topicList = new ConcurrentList<TopicInterface>();
 		subList = new ConcurrentHashMap<SubInterface, Boolean>();
-		subscribers = new ConcurrentHashMap<TopicInterface, List<SubInterface>>(); 
+		subscribers = new ConcurrentHashMap<TopicInterface, List<SubInterface>>();
 	}
 
 	/**
@@ -46,11 +46,11 @@ public class PCADBroker implements PCADBrokerInterface {
 	}
 
 	private boolean actualSubscribe(SubInterface sub, TopicInterface topic) {
-		if (!topicList.contains(topic)) {
+		if (!subscribers.containsKey(topic)) {
 			/**
-			 * Se non esiste il topic allora non esiste neanche nella hashMap
+			 * Se non esiste il topic allora lo creo
 			 **/
-			topicList.add(topic);
+			// topicList.add(topic);
 			subscribers.put(topic, new LinkedList<SubInterface>(Arrays.asList(sub)));
 			return true;
 		}
@@ -59,6 +59,10 @@ public class PCADBroker implements PCADBrokerInterface {
 		 **/
 		if (subscribers.get(topic).contains(sub))
 			return false;
+		/**
+		 * Il topic esiste e il sub non e' ancora iscritto, allora lo aggiungo e ritorno
+		 * true
+		 **/
 		subscribers.get(topic).add(sub);
 		return true;
 	}
@@ -76,16 +80,21 @@ public class PCADBroker implements PCADBrokerInterface {
 		return actualStopNotification(client);
 	}
 
-	private boolean actualStopNotification(SubInterface client) {
-		if (subList.containsKey(client))
-			subList.put(client, false);
+	private boolean actualStopNotification(SubInterface sub) {
+		/**
+		 * Se il subscriber esiste a prescindere metto il suo valore a false, se non
+		 * esiste ritorno false
+		 **/
+		if (subList.containsKey(sub))
+			subList.put(sub, false);
 		else
 			return false;
 		return true;
 	}
 
 	/**
-	 * UNSUBSCRIBE
+	 * UNSUBSCRIBE Un Broker o un Client puo' decidere di togliere la propria
+	 * iscrizione da un topic
 	 **/
 	@Override
 	public boolean Unsubscribe(ClientInterface sub, TopicInterface topic) {
@@ -97,49 +106,107 @@ public class PCADBroker implements PCADBrokerInterface {
 		return actualUnsubscribe(broker, topic);
 	}
 
-	private boolean actualUnsubscribe(Object sub, TopicInterface topic) {
+	private boolean actualUnsubscribe(SubInterface sub, TopicInterface topic) {
 		if (!subscribers.get(topic).contains(sub))
 			return false;
 		subscribers.get(topic).remove(sub);
+		/**
+		 * se cancello l'unico sub della lista cancello anche la key nella hastable
+		 **/
+		if (subscribers.get(topic).isEmpty()) { // sub
+			subscribers.remove(topic);
+		}
 		return true;
 	}
 
+	/**
+	 * PUBLISH Un Client o un Broker possono pubblicare una news da condividere con
+	 * gli altri utenti
+	 **/
 	@Override
 	public void PublishNews(NewsInterface news, TopicInterface topic) throws Exception {
-	//	if (!subscribers.containsKey(topic))
-		//	throw new Exception();
-		if(!subscribers.containsKey(topic)) return;
+		/**
+		 * Se non esiste il topic esco direttamente
+		 **/
+		if (!subscribers.containsKey(topic))
+			return;
+		/**
+		 * Altrimenti ciclo per la lista dei subscribers iscritti a un certo topic
+		 * controllando per ogni sub che non abbia deciso di silenziare le notifiche
+		 **/
 		for (SubInterface sub : subscribers.get(topic))
-			sub.notifyClient(news);
+			if (subList.get(sub))
+				sub.notifyClient(news);
+	}
 
+	/**
+	 * CONNECT Un Client o un Broker per accedere al servizio devono in primo luogo
+	 * connettersi, cosi' facendo mi salvo il suo oggetto con cui successivamente
+	 * andro' a comunicare
+	 **/
+	@Override
+	public boolean Connect(ClientInterface sub) throws RemoteException {
+		return ActualConnect(sub);
 	}
 
 	@Override
-	public boolean Connect(ClientInterface sub) throws RemoteException {
+	public boolean Connect(PCADBrokerInterface broker) throws RemoteException {
+		return ActualConnect(broker);
+	}
+
+	private boolean ActualConnect(SubInterface sub) {
+		/**
+		 * Controllo che l'utente non si sia gia' connesso, in quel caso ritorno false
+		 **/
 		if (subList.containsKey(sub))
 			return false;
+		/**
+		 * In caso contrario lo aggiungo alla lista di sub salvandomi il suo oggetto
+		 **/
 		subList.put(sub, true);
-		System.out.println("Ohoh");
+		System.out.println("Connection accepted!");
 		try {
+			/**
+			 * Dopo aver dichiarato di aver accettato la connessione notifico la notizia a
+			 * chi ha richiesto il servizio
+			 **/
 			sub.notifyClient(null);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return true;
 	}
 
+	/**
+	 * DISCONNECT Un Client o un Broker per togliersi completamente dal servizio
+	 * devono effettuare un'operazione di disconnect
+	 **/
+	@Override
+	public boolean Disconnect(PCADBrokerInterface broker) {
+		return actualDisconnect(broker);
+
+	}
 	@Override
 	public boolean Disconnect(ClientInterface sub) {
+		return actualDisconnect(sub);
+	}
+	private boolean actualDisconnect(SubInterface sub) {
+		/**
+		 * Se il sub non e' presente ritorno false, in caso contrario lo elimino
+		 **/
 		if (!subList.containsKey(sub))
 			return false;
 		subList.remove(sub);
+		/**
+		 * Successivamente elimino l'utente da tutte le liste a cui era iscritto
+		 **/
 		return deleteFromLists(sub);
 	}
 
-	private boolean deleteFromLists(ClientInterface sub) {
-		for (List<SubInterface> list : subscribers.values())
-			list.remove(sub);
+	private boolean deleteFromLists(SubInterface sub) {
+		for (List<SubInterface> l : subscribers.values()) {
+			l.remove(sub);
+		}
 		return true;
 	}
 
@@ -148,20 +215,20 @@ public class PCADBroker implements PCADBrokerInterface {
 		PublishNews(news, news.GetTopic());
 	}
 
-    @Override
-    public int hashCode() {
-        return topicList.hashCode()*subList.hashCode()*subscribers.hashCode()*11;
-    }
+	@Override
+	public int hashCode() {
+		return subList.hashCode() * subscribers.hashCode() * 11;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-       if (!(obj instanceof PCADBroker))
-            return false;
-        if (obj == this)
-            return true;
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof PCADBroker))
+			return false;
+		if (obj == this)
+			return true;
 
-        PCADBroker br = (PCADBroker) obj;
-        return br.topicList.equals(topicList)&& br.subscribers.equals(subscribers) && br.topicList.equals(topicList);
-    }
+		PCADBroker br = (PCADBroker) obj;
+		return br.subscribers.equals(subscribers);
+	}
 
 }

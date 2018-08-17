@@ -89,7 +89,7 @@ public class Client implements ClientInterface {
 	}
 	
 
-    @Override
+    @Override	
     public int hashCode() {
         return  11*NewsToRead.hashCode()*server.hashCode();
     }
