@@ -11,7 +11,7 @@ import commons.TopicInterface;
 public class ClientMain1 {
 
 	public static void main(String [] args) {
-		Client client = new Client();
+		Client client = new Client("SERVER_1");
 		boolean exit = false;
 		Scanner sc=new Scanner(System.in);
 		int choice;
@@ -45,6 +45,7 @@ public class ClientMain1 {
 					client.Subscribe(topic);
 					break;
 				case 7:
+					//NewsInterface news = new News(topic, "lUL");
 					client.ReadNews();
 					break;
 				case 8:
@@ -57,7 +58,7 @@ public class ClientMain1 {
 		}
 
 	}
-	private static void printMenu() {
+	public static void printMenu() {
 		System.out.println("Menu:"+System.lineSeparator()+
 				"1) Connect"+System.lineSeparator()+
 				"2) Disconnect"+System.lineSeparator()+

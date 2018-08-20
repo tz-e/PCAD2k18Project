@@ -4,11 +4,19 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Scanner;
 
 import broker.PCADBroker;
 import broker.PCADBrokerInterface;
+import commons.News;
+import commons.NewsInterface;
+import commons.Topic;
+import commons.TopicInterface;
 
 public class MainServer {
+	private static PCADBrokerInterface  stubRequest;
+	private static PCADBrokerInterface  server;
+
 	public static void main(String args[]) {
 		try {
 			System.setProperty("java.security.policy","file:./sec.policy");
@@ -22,14 +30,16 @@ public class MainServer {
 				r = LocateRegistry.getRegistry(8000);
 			}
 			System.out.println("Registro trovato");
-			PCADBrokerInterface server = (PCADBrokerInterface) new PCADBroker();
-			PCADBrokerInterface stubRequest = (PCADBrokerInterface) UnicastRemoteObject.exportObject(server,0);
-			r.rebind("REG", stubRequest);
+			server = (PCADBrokerInterface) new PCADBroker();
+			stubRequest = (PCADBrokerInterface) UnicastRemoteObject.exportObject(server,0);
+			r.rebind("SERVER_2", stubRequest);
 		    System.out.println("Tutto ok");
+		    
 		    
 		} 
 		catch (Exception e) {
 			System.out.println(e);
 		}
+		
 	 }
 }

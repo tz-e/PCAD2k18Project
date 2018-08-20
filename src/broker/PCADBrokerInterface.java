@@ -23,7 +23,7 @@ public interface PCADBrokerInterface extends SubInterface, Remote, Serializable 
 
 	public boolean Subscribe(ClientInterface sub, TopicInterface topic) throws RemoteException;
 
-	public boolean Subscribe(PCADBrokerInterface broker, Topic topic) throws RemoteException;
+	public boolean Subscribe(PCADBrokerInterface broker, TopicInterface topic) throws RemoteException;
 
 	public boolean Unsubscribe(ClientInterface sub, TopicInterface topic) throws RemoteException;
 
