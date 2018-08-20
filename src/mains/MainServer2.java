@@ -7,8 +7,14 @@ import java.rmi.server.UnicastRemoteObject;
 
 import broker.PCADBroker;
 import broker.PCADBrokerInterface;
+import commons.Topic;
+import commons.TopicInterface;
 
-public class MainServer {
+
+public class MainServer2 {
+	private static PCADBrokerInterface  stubRequest;
+	private static PCADBrokerInterface  server;
+
 	public static void main(String args[]) {
 		try {
 			System.setProperty("java.security.policy","file:./sec.policy");
@@ -22,14 +28,16 @@ public class MainServer {
 				r = LocateRegistry.getRegistry(8000);
 			}
 			System.out.println("Registro trovato");
-			PCADBrokerInterface server = (PCADBrokerInterface) new PCADBroker();
-			PCADBrokerInterface stubRequest = (PCADBrokerInterface) UnicastRemoteObject.exportObject(server,0);
-			r.rebind("REG", stubRequest);
+			server = (PCADBrokerInterface) new PCADBroker();
+			stubRequest = (PCADBrokerInterface) UnicastRemoteObject.exportObject(server,0);
+			r.rebind("SERVER_2", stubRequest);
 		    System.out.println("Tutto ok");
+			TopicInterface topic = new Topic("Sport", "VIVA IL PALLONE");
 		    
 		} 
 		catch (Exception e) {
 			System.out.println(e);
 		}
+		
 	 }
 }

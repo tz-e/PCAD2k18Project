@@ -36,7 +36,7 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * SUBSCRIBE
 	 **/
 	@Override
-	public boolean Subscribe(PCADBrokerInterface broker, Topic topic) {
+	public boolean Subscribe(PCADBrokerInterface broker, TopicInterface topic) {
 		return actualSubscribe(broker, topic);
 	}
 
@@ -135,8 +135,10 @@ public class PCADBroker implements PCADBrokerInterface {
 		 * controllando per ogni sub che non abbia deciso di silenziare le notifiche
 		 **/
 		for (SubInterface sub : subscribers.get(topic))
-			if (subList.get(sub))
+			if (subList.get(sub)) {
+				System.out.println("Sending news to a "+sub.toString());
 				sub.notifyClient(news);
+			}
 	}
 
 	/**
@@ -212,7 +214,8 @@ public class PCADBroker implements PCADBrokerInterface {
 
 	@Override
 	public void notifyClient(NewsInterface news) throws Exception {
-		PublishNews(news, news.GetTopic());
+		if (news==null)	System.out.println("Handshake ok!");
+		else	PublishNews(news, news.GetTopic());
 	}
 
 	@Override
@@ -230,5 +233,9 @@ public class PCADBroker implements PCADBrokerInterface {
 		PCADBroker br = (PCADBroker) obj;
 		return br.subscribers.equals(subscribers);
 	}
-
+	@Override
+	public String toString() {
+		return "Server";
+	}
+	
 }

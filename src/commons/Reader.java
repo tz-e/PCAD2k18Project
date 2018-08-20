@@ -20,7 +20,7 @@ public class Reader implements Runnable {
 		try {
 			System.out.println("Comincio a leggere");
 			while (true) {
-				TimeUnit.SECONDS.sleep(10);
+				TimeUnit.SECONDS.sleep(5);
 				while (!queue.isEmpty()) {
 					NewsInterface n = queue.poll();
 					System.out.println("Topic: " + n.GetTopic() + "\\n Testo: " + n.GetText());

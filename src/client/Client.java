@@ -23,7 +23,7 @@ public class Client implements ClientInterface {
 	private PCADBrokerInterface server;
 	private ConcurrentLinkedQueue<NewsInterface> NewsToRead;
 
-	public Client() {
+	public Client(String serverToConnect) {
 		NewsToRead = new ConcurrentLinkedQueue<NewsInterface>();
 		try {
 			System.setProperty("java.security.policy", "file:./sec.policy");
@@ -33,7 +33,7 @@ public class Client implements ClientInterface {
 			System.setProperty("java.rmi.server.hostname", "localhost");
 			// Registry r = LocateRegistry.getRegistry("localhost",8000);
 			Registry r = LocateRegistry.getRegistry(8000);
-			server = (PCADBrokerInterface) r.lookup("REG");
+			server = (PCADBrokerInterface) r.lookup(serverToConnect);
 			stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
 			server.Connect(stub);
 
@@ -104,5 +104,8 @@ public class Client implements ClientInterface {
         Client cl = (Client) obj;
         return cl.NewsToRead.equals(NewsToRead) && cl.server.equals(server);
     }
-
+    @Override
+	public String toString() {
+		return "Client";
+	}
 }
