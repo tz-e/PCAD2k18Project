@@ -59,7 +59,7 @@ public class Client implements ClientInterface {
 
 	@Override
 	public void Publish(NewsInterface news) throws Exception {
-		System.out.println(server.PublishNews(news, news.GetTopic()));
+		server.PublishNews(news, news.GetTopic());
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class Client implements ClientInterface {
 		if (news == null)
 			System.out.println("Handshake ok!");
 		else {
-			System.out.println("Notify request received - Client");
+			System.out.println("News Received by Server! - Client");
 			NewsToRead.add(news);
 		}
 		// System.out.println("Topic: " + news.GetTopic() + "\\n Testo: " +

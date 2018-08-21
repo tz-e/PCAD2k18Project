@@ -3,12 +3,15 @@ package commons;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.PriorityQueue;
+
 /**
- * Questa classe implementa una lista concorrente, oltre ai metodi get / size / 
- * add (int, T) / remove ho fatto anche l'override di add (T) per rendere alcune operazioni piu' pratiche
+ * Questa classe implementa una lista concorrente, oltre ai metodi get / size /
+ * add (int, T) / remove ho fatto anche l'override di add (T) per rendere alcune
+ * operazioni piu' pratiche
+ * 
  * @author Daniele Atzeni
  */
-//TODO Testare questa clsse
+/*TODO Testare questa clsse
 public class ConcurrentList<T> extends AbstractList<T> {
 	private int maxSize = 10;
 	private int size;
@@ -66,20 +69,20 @@ public class ConcurrentList<T> extends AbstractList<T> {
 		/**
 		 * se non ho ancora riempito l'array entro qui
 		 **/
-		if (size < maxSize) {
+		/*if (size < maxSize) {
 			/**
 			 * se precedentemente ho cancellato una posizione intermedia il nuovo valore lo
 			 * vado ad inserire quise precedentemente ho cancellato una posizione intermedia
 			 * il nuovo valore lo vado ad inserire qui
 			 **/
-			if (!freeIndexes.isEmpty())
+			/*if (!freeIndexes.isEmpty())
 				this.add(freeIndexes.poll(), value);
 			else {
 				/**
 				 * In caso contrario lo inserisco nell'ultima posizione e incremento il numero
 				 * di elementi
 				 **/
-				int temp = findNextEmptyIndex();
+				/*int temp = findNextEmptyIndex();
 				if (temp != -1)
 					this.add(size, value);
 				else
@@ -94,7 +97,7 @@ public class ConcurrentList<T> extends AbstractList<T> {
 		 * dimensione raddoppiata
 		 **/
 
-		arr = Arrays.copyOf(arr, maxSize * 2);
+		/*arr = Arrays.copyOf(arr, maxSize * 2);
 		return true;
 	}
 
@@ -103,26 +106,26 @@ public class ConcurrentList<T> extends AbstractList<T> {
 		 * Questo metodo trova il primo indice libero a partire da size, visto che
 		 * potrebbe essere stati inseriti dei valori successivi a size
 		 **/
-		for (int i = size + 1; i < arr.length; ++i)
+		/*for (int i = size + 1; i < arr.length; ++i)
 			if (arr[i] == null)
 				return i;
 		return -1;
 	}
 
-    @Override
-    public int hashCode() {
-        return arr.hashCode()*size*maxSize*11;
-    }
+	@Override
+	public int hashCode() {
+		return arr.hashCode() * size * maxSize * 11;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-       if (!(obj instanceof ConcurrentList))
-            return false;
-        if (obj == this)
-            return true;
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof ConcurrentList))
+			return false;
+		if (obj == this)
+			return true;
 
-        ConcurrentList<T> cl = (ConcurrentList<T>) obj;
-        return cl.arr.equals(arr) && cl.size==size && cl.maxSize==maxSize && cl.freeIndexes.equals(freeIndexes);
-    }
+		ConcurrentList<T> cl = (ConcurrentList<T>) obj;
+		return cl.arr.equals(arr) && cl.size == size && cl.maxSize == maxSize && cl.freeIndexes.equals(freeIndexes);
+	}
 
-}
+}*/

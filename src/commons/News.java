@@ -4,17 +4,20 @@ import java.io.Serializable;
 
 public class News implements NewsInterface, Serializable {
 	/**
-	 * 
+	 * Implementazione effettiva di NewsInterface
+	 * @author Daniele Atzeni
 	 */
 	private static final long serialVersionUID = 1L;
 	private TopicInterface _topic;
 	private String _text;
 	public News(TopicInterface topic, String text) {
+		Utils.checkIfNull(topic, text);
 		_topic=topic;
 		_text=text;
 	}
 
 	public void SetTopic(TopicInterface _topic) {
+		Utils.checkIfNull(_topic);
 		this._topic = _topic;
 	}
 	@Override
@@ -22,6 +25,7 @@ public class News implements NewsInterface, Serializable {
 		return _topic;
 	}
 	public void SetText(String _text) {
+		Utils.checkIfNull(_text);
 		this._text = _text;
 	}
 

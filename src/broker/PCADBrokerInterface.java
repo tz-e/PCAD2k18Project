@@ -7,9 +7,14 @@ import java.rmi.RemoteException;
 import client.ClientInterface;
 import commons.NewsInterface;
 import commons.SubInterface;
-import commons.Topic;
 import commons.TopicInterface;
 
+/**
+ * Interfaccia per rappresentare un generico Broker Contiene Metodi per
+ * comunicare sia con dei suoi pari che con dei client
+ * 
+ * @author Daniele Atzeni
+ */
 public interface PCADBrokerInterface extends SubInterface, Remote, Serializable {
 
 	public boolean Connect(ClientInterface sub) throws RemoteException;
@@ -28,7 +33,7 @@ public interface PCADBrokerInterface extends SubInterface, Remote, Serializable 
 
 	public boolean Unsubscribe(PCADBrokerInterface broker, TopicInterface topic) throws RemoteException;
 
-	public int PublishNews(NewsInterface news, TopicInterface topic) throws Exception;
+	public void PublishNews(NewsInterface news, TopicInterface topic) throws Exception;
 
 	public boolean StopNotification(ClientInterface client) throws RemoteException;
 
