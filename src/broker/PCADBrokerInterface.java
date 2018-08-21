@@ -11,7 +11,6 @@ import commons.Topic;
 import commons.TopicInterface;
 
 public interface PCADBrokerInterface extends SubInterface, Remote, Serializable {
-	// public void request(Request r,SubInterface stub) throws RemoteException;
 
 	public boolean Connect(ClientInterface sub) throws RemoteException;
 
@@ -29,10 +28,12 @@ public interface PCADBrokerInterface extends SubInterface, Remote, Serializable 
 
 	public boolean Unsubscribe(PCADBrokerInterface broker, TopicInterface topic) throws RemoteException;
 
-	public void PublishNews(NewsInterface news, TopicInterface topic) throws Exception;
+	public int PublishNews(NewsInterface news, TopicInterface topic) throws Exception;
 
 	public boolean StopNotification(ClientInterface client) throws RemoteException;
 
 	public boolean StopNotification(PCADBrokerInterface broker) throws RemoteException;
+
+	public void notifyBroker(NewsInterface news) throws RemoteException, Exception;
 
 }

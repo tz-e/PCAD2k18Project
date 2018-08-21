@@ -46,6 +46,7 @@ public class PCADBroker implements PCADBrokerInterface {
 	}
 
 	private boolean actualSubscribe(SubInterface sub, TopicInterface topic) {
+		System.out.println((sub instanceof ClientInterface ? "Client " : "Broker ") + "subbed to " + topic.toString());
 		if (!subscribers.containsKey(topic)) {
 			/**
 			 * Se non esiste il topic allora lo creo
@@ -124,22 +125,24 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * gli altri utenti
 	 **/
 	@Override
-	public void PublishNews(NewsInterface news, TopicInterface topic) throws Exception {
+	public int PublishNews(NewsInterface news, TopicInterface topic) throws Exception {
 		/**
 		 * Se non esiste il topic esco direttamente
 		 **/
 		if (!subscribers.containsKey(topic))
-			return;
+			return -1;
 		/**
 		 * Altrimenti ciclo per la lista dei subscribers iscritti a un certo topic
 		 * controllando per ogni sub che non abbia deciso di silenziare le notifiche
 		 **/
+		System.out.println("Number of subs: "+subscribers.get(topic).size());
 		for (SubInterface sub : subscribers.get(topic))
 			if (subList.get(sub)) {
-				System.out.println("Sending news to a "+sub.toString());
-				sub.notifyClient(news);
-			}
-	}
+				System.out.println("Sending news to a " + sub.toString());
+				if(sub instanceof ClientInterface)	((ClientInterface) sub).notifyClient(news);
+				else	((PCADBrokerInterface) sub).notifyBroker(news);			}
+		return 1;
+		}
 
 	/**
 	 * CONNECT Un Client o un Broker per accedere al servizio devono in primo luogo
@@ -166,13 +169,14 @@ public class PCADBroker implements PCADBrokerInterface {
 		 * In caso contrario lo aggiungo alla lista di sub salvandomi il suo oggetto
 		 **/
 		subList.put(sub, true);
-		System.out.println("Connection accepted!");
+		System.out.println("Connection accepted by "+ (sub instanceof ClientInterface ? "Client " : "Broker"));
 		try {
 			/**
 			 * Dopo aver dichiarato di aver accettato la connessione notifico la notizia a
 			 * chi ha richiesto il servizio
 			 **/
-			sub.notifyClient(null);
+			if(sub instanceof ClientInterface)	((ClientInterface) sub).notifyClient(null);
+			else	((PCADBrokerInterface) sub).notifyBroker(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -188,10 +192,12 @@ public class PCADBroker implements PCADBrokerInterface {
 		return actualDisconnect(broker);
 
 	}
+
 	@Override
 	public boolean Disconnect(ClientInterface sub) {
 		return actualDisconnect(sub);
 	}
+
 	private boolean actualDisconnect(SubInterface sub) {
 		/**
 		 * Se il sub non e' presente ritorno false, in caso contrario lo elimino
@@ -213,9 +219,13 @@ public class PCADBroker implements PCADBrokerInterface {
 	}
 
 	@Override
-	public void notifyClient(NewsInterface news) throws Exception {
-		if (news==null)	System.out.println("Handshake ok!");
-		else	PublishNews(news, news.GetTopic());
+	public void notifyBroker(NewsInterface news) throws Exception {
+		if (news == null)
+			System.out.println("Handshake ok!");
+		else {
+			System.out.println("Notify request received - Broker");
+			PublishNews(news, news.GetTopic());
+		}
 	}
 
 	@Override
@@ -233,9 +243,10 @@ public class PCADBroker implements PCADBrokerInterface {
 		PCADBroker br = (PCADBroker) obj;
 		return br.subscribers.equals(subscribers);
 	}
+
 	@Override
 	public String toString() {
 		return "Server";
 	}
-	
+
 }

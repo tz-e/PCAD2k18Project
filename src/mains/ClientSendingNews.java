@@ -8,21 +8,22 @@ import commons.NewsInterface;
 import commons.Topic;
 import commons.TopicInterface;
 
-public class ClientMain2 {
+public class ClientSendingNews {
 
 	public static void main(String[] args) {
 		
 
-				Client client = new Client("SERVER_2");
+		Client client = new Client("SERVER_SENDING_NEWS");
+		System.out.println("Let's start sending news!");
 				
 				TopicInterface topic = new Topic("Sport", "VIVA IL PALLONE");
 				for(int i=0; i<10; ++i) {
 
 							NewsInterface news = new News(topic, "LUL"+i);
 							try {
-								TimeUnit.SECONDS.sleep(10);
-								System.out.println(i);
+								System.out.println("News n^: "+i);
 								client.Publish(news);
+								TimeUnit.SECONDS.sleep(10);
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();

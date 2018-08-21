@@ -16,7 +16,7 @@ import commons.Topic;
 import commons.TopicInterface;
 
 public class MainServer1 {
-	private static PCADBrokerInterface server;
+	/*private static PCADBrokerInterface server;
 	private static PCADBrokerInterface serverToConnect;
 	private static PCADBrokerInterface stubRequest;
 
@@ -47,7 +47,7 @@ public class MainServer1 {
 		Scanner sc = new Scanner(System.in);
 
 		while (!exit) {
-			ClientMain1.printMenu();
+			//ClientMain1.printMenu();
 			try {
 				// choice=System.in.read();
 				switch (sc.nextInt()) {
@@ -82,5 +82,5 @@ public class MainServer1 {
 		}
 
 	}
-
+*/
 }

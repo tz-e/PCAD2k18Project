@@ -11,9 +11,11 @@ import commons.Topic;
 import commons.TopicInterface;
 
 
-public class MainServer2 {
+public class ServerSendingNews {
 	private static PCADBrokerInterface  stubRequest;
 	private static PCADBrokerInterface  server;
+	private static PCADBrokerInterface serverToSubTo;
+
 
 	public static void main(String args[]) {
 		try {
@@ -30,10 +32,9 @@ public class MainServer2 {
 			System.out.println("Registro trovato");
 			server = (PCADBrokerInterface) new PCADBroker();
 			stubRequest = (PCADBrokerInterface) UnicastRemoteObject.exportObject(server,0);
-			r.rebind("SERVER_2", stubRequest);
+			r.rebind("SERVER_SENDING_NEWS", stubRequest);
 		    System.out.println("Tutto ok");
-			TopicInterface topic = new Topic("Sport", "VIVA IL PALLONE");
-		    
+			
 		} 
 		catch (Exception e) {
 			System.out.println(e);

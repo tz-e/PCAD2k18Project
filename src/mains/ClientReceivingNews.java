@@ -1,5 +1,6 @@
 package mains;
 
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
 import client.Client;
@@ -8,17 +9,16 @@ import commons.NewsInterface;
 import commons.Topic;
 import commons.TopicInterface;
 
-public class ClientMain1 {
+public class ClientReceivingNews {
 
 	public static void main(String [] args) {
-		Client client = new Client("SERVER_1");
+		Client client = new Client("SERVER_SUBBED");
 		boolean exit = false;
 		Scanner sc=new Scanner(System.in);
-		int choice;
-		System.out.println("ehhe");
+		System.out.println("Let's start reading news!");
 
 		TopicInterface topic = new Topic("Sport", "VIVA IL PALLONE");
-		while (!exit) {
+		/*while (!exit) {
 			printMenu();
 			try {
 				//choice=System.in.read();
@@ -55,7 +55,14 @@ public class ClientMain1 {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}*/
+		try {
+			System.out.println(client.Subscribe(topic));
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		client.ReadNews();
 
 	}
 	public static void printMenu() {

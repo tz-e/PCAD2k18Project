@@ -59,7 +59,7 @@ public class Client implements ClientInterface {
 
 	@Override
 	public void Publish(NewsInterface news) throws Exception {
-		server.PublishNews(news, news.GetTopic());
+		System.out.println(server.PublishNews(news, news.GetTopic()));
 	}
 
 	@Override
@@ -71,40 +71,41 @@ public class Client implements ClientInterface {
 	public void notifyClient(NewsInterface news) throws RemoteException {
 		if (news == null)
 			System.out.println("Handshake ok!");
-		else 
+		else {
+			System.out.println("Notify request received - Client");
 			NewsToRead.add(news);
-			//System.out.println("Topic: " + news.GetTopic() + "\\n Testo: " + news.GetText());
-		
-
+		}
+		// System.out.println("Topic: " + news.GetTopic() + "\\n Testo: " +
+		// news.GetText());
 	}
 
 	@Override
-	public void Subscribe(TopicInterface topic) throws RemoteException {
-		server.Subscribe(stub, topic);
+	public boolean Subscribe(TopicInterface topic) throws RemoteException {
+		return server.Subscribe(stub, topic);
 	}
 
 	public void ReadNews() {
 		Thread thr1 = new Thread(new Reader(NewsToRead));
 		thr1.start();
 	}
-	
 
-    @Override	
-    public int hashCode() {
-        return  11*NewsToRead.hashCode()*server.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return 11 * NewsToRead.hashCode() * server.hashCode();
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-       if (!(obj instanceof Client))
-            return false;
-        if (obj == this)
-            return true;
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Client))
+			return false;
+		if (obj == this)
+			return true;
 
-        Client cl = (Client) obj;
-        return cl.NewsToRead.equals(NewsToRead) && cl.server.equals(server);
-    }
-    @Override
+		Client cl = (Client) obj;
+		return cl.NewsToRead.equals(NewsToRead) && cl.server.equals(server);
+	}
+
+	@Override
 	public String toString() {
 		return "Client";
 	}
