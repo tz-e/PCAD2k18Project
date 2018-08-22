@@ -4,7 +4,7 @@ package commons;
  *  di controllo comuni a tutte le funzionalita'
  * @author Daniele Atzeni
  */
-public class  Utils {
+public class Utils {
 	public static void checkIfNull(Object... objs) {
 		if(objs==null) throw new IllegalArgumentException();
 		for(Object obj:objs) {

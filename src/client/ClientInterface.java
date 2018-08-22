@@ -7,19 +7,23 @@ import java.rmi.RemoteException;
 import commons.NewsInterface;
 import commons.SubInterface;
 import commons.TopicInterface;
+import exceptions.NonExistentSubException;
+import exceptions.NonExistentTopicException;
+import exceptions.SubscriberAlreadyConnectedException;
+import exceptions.SubscriberAlreadySubbedException;
 
 public interface ClientInterface extends SubInterface, Remote, Serializable {
-	public boolean Subscribe(TopicInterface topic) throws RemoteException;
+	public void Subscribe(TopicInterface topic) throws RemoteException, SubscriberAlreadySubbedException, NonExistentSubException;
 
-	public void StopNotification() throws RemoteException;
+	public void StopNotification() throws RemoteException, NonExistentSubException;
 
 	public void Publish(NewsInterface news) throws Exception, RemoteException;
 
-	public void Unsubscribe(TopicInterface topic) throws RemoteException;
+	public void Unsubscribe(TopicInterface topic) throws RemoteException, NonExistentTopicException, NonExistentSubException;
 
-	public boolean Connect() throws RemoteException;
+	public void Connect() throws RemoteException, SubscriberAlreadyConnectedException;
 
-	public boolean Disconnect() throws RemoteException;
+	public void Disconnect() throws RemoteException, NonExistentSubException;
 
 	void notifyClient(NewsInterface news) throws RemoteException, Exception;
 

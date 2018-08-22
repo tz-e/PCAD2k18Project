@@ -4,6 +4,10 @@ import broker.PCADBrokerInterface;
 import commons.NewsInterface;
 import commons.Topic;
 import commons.TopicInterface;
+import exceptions.NonExistentSubException;
+import exceptions.NonExistentTopicException;
+import exceptions.SubscriberAlreadyConnectedException;
+import exceptions.SubscriberAlreadySubbedException;
 import commons.Reader;
 
 import java.rmi.NotBoundException;
@@ -23,6 +27,11 @@ public class Client implements ClientInterface {
 	private PCADBrokerInterface server;
 	private ConcurrentLinkedQueue<NewsInterface> NewsToRead;
 
+	public Client(PCADBrokerInterface broker) {
+		server=broker;
+		stub=this;
+		NewsToRead = new ConcurrentLinkedQueue<NewsInterface>();
+	}
 	public Client(String serverToConnect) {
 		NewsToRead = new ConcurrentLinkedQueue<NewsInterface>();
 		try {
@@ -37,23 +46,23 @@ public class Client implements ClientInterface {
 			stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
 			server.Connect(stub);
 
-		} catch (RemoteException | NotBoundException e) {
+		} catch (RemoteException | NotBoundException | SubscriberAlreadyConnectedException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public boolean Connect() throws RemoteException {
-		return server.Connect(stub);
+	public void Connect() throws RemoteException, SubscriberAlreadyConnectedException {
+		server.Connect(stub);
 	}
 
 	@Override
-	public boolean Disconnect() throws RemoteException {
-		return server.Disconnect(stub);
+	public void Disconnect() throws RemoteException, NonExistentSubException {
+		server.Disconnect(stub);
 	}
 
 	@Override
-	public void StopNotification() throws RemoteException {
+	public void StopNotification() throws RemoteException, NonExistentSubException {
 		server.StopNotification(stub);
 	}
 
@@ -63,7 +72,7 @@ public class Client implements ClientInterface {
 	}
 
 	@Override
-	public void Unsubscribe(TopicInterface topic) throws RemoteException {
+	public void Unsubscribe(TopicInterface topic) throws RemoteException, NonExistentTopicException, NonExistentSubException {
 		server.Unsubscribe(stub, topic);
 	}
 
@@ -80,8 +89,8 @@ public class Client implements ClientInterface {
 	}
 
 	@Override
-	public boolean Subscribe(TopicInterface topic) throws RemoteException {
-		return server.Subscribe(stub, topic);
+	public void Subscribe(TopicInterface topic) throws RemoteException, SubscriberAlreadySubbedException, NonExistentSubException {
+		server.Subscribe(stub, topic);
 	}
 
 	public void ReadNews() {
@@ -91,7 +100,7 @@ public class Client implements ClientInterface {
 
 	@Override
 	public int hashCode() {
-		return 11 * NewsToRead.hashCode() * server.hashCode();
+		return 11 * NewsToRead.hashCode() ;
 	}
 
 	@Override
@@ -102,7 +111,7 @@ public class Client implements ClientInterface {
 			return true;
 
 		Client cl = (Client) obj;
-		return cl.NewsToRead.equals(NewsToRead) && cl.server.equals(server);
+		return cl.NewsToRead.equals(NewsToRead) && cl.server.equals(server) && cl.server.equals(server) && cl.stub.equals(stub);
 	}
 
 	@Override

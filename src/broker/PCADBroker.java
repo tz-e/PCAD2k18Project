@@ -11,6 +11,10 @@ import commons.NewsInterface;
 import commons.SubInterface;
 import commons.TopicInterface;
 import commons.Utils;
+import exceptions.NonExistentSubException;
+import exceptions.NonExistentTopicException;
+import exceptions.SubscriberAlreadyConnectedException;
+import exceptions.SubscriberAlreadySubbedException;
 
 public class PCADBroker implements PCADBrokerInterface {
 
@@ -31,60 +35,65 @@ public class PCADBroker implements PCADBrokerInterface {
 
 	/**
 	 * SUBSCRIBE
+	 * @throws NonExistentSubException 
+	 * @throws SubscriberAlreadySubbedException 
 	 **/
 	@Override
-	public boolean Subscribe(PCADBrokerInterface broker, TopicInterface topic) {
+	public void Subscribe(PCADBrokerInterface broker, TopicInterface topic) throws SubscriberAlreadySubbedException, NonExistentSubException {
 		Utils.checkIfNull(broker, topic);
-		return actualSubscribe(broker, topic);
+		actualSubscribe(broker, topic);
 	}
 
 	@Override
-	public boolean Subscribe(ClientInterface sub, TopicInterface topic) {
+	public void Subscribe(ClientInterface sub, TopicInterface topic) throws SubscriberAlreadySubbedException, NonExistentSubException {
 		Utils.checkIfNull(sub, topic);
-		return actualSubscribe(sub, topic);
+		actualSubscribe(sub, topic);
 	}
 
-	private boolean actualSubscribe(SubInterface sub, TopicInterface topic) {
+	private void actualSubscribe(SubInterface sub, TopicInterface topic) throws SubscriberAlreadySubbedException, NonExistentSubException {
 		System.out.println((sub instanceof ClientInterface ? "Client " : "Broker ") + "subbed to " + topic.toString());
+		/**
+		 * Se il sub non e' connesso esco direttamente
+		 **/
+		if(!subList.containsKey(sub)) throw new NonExistentSubException();
+		/**
+		 * Se non esiste il topic allora lo creo
+		 **/
 		if (!subscribers.containsKey(topic)) {
-			/**
-			 * Se non esiste il topic allora lo creo
-			 **/
-			// topicList.add(topic);
 			subscribers.put(topic, new LinkedList<SubInterface>(Arrays.asList(sub)));
-			return true;
+			return;
 		}
 		/**
 		 * Il topic esiste e il sub e' gia' iscritto, ritorno false
 		 **/
 		if (subscribers.get(topic).contains(sub))
-			return false;
-		/**
+			throw new SubscriberAlreadySubbedException();
+			/**
 		 * Il topic esiste e il sub non e' ancora iscritto, allora lo aggiungo e ritorno
 		 * true
 		 **/
 		subscribers.get(topic).add(sub);
-		return true;
 	}
 
 	/**
 	 * STOP NOTIFICATION
 	 * 
 	 * Un client o un broker possono decidere di smettere di ricevere notifiche
+	 * @throws NonExistentSubException 
 	 **/
 	@Override
-	public boolean StopNotification(PCADBrokerInterface broker) {
+	public void StopNotification(PCADBrokerInterface broker) throws NonExistentSubException {
 		Utils.checkIfNull(broker);
-		return actualStopNotification(broker);
+		actualStopNotification(broker);
 	}
 
 	@Override
-	public boolean StopNotification(ClientInterface client) {
+	public void StopNotification(ClientInterface client) throws NonExistentSubException {
 		Utils.checkIfNull(client);
-		return actualStopNotification(client);
+		actualStopNotification(client);
 	}
 
-	private boolean actualStopNotification(SubInterface sub) {
+	private void actualStopNotification(SubInterface sub) throws NonExistentSubException {
 		/**
 		 * Se il subscriber esiste a prescindere metto il suo valore a false, se non
 		 * esiste ritorno false
@@ -92,8 +101,8 @@ public class PCADBroker implements PCADBrokerInterface {
 		if (subList.containsKey(sub))
 			subList.put(sub, false);
 		else
-			return false;
-		return true;
+			throw new NonExistentSubException();
+		
 	}
 
 	/**
@@ -101,33 +110,37 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * 
 	 * Un Broker o un Client puo' decidere di togliere la propria iscrizione da un
 	 * topic
+	 * @throws NonExistentSubException 
+	 * @throws NonExistentTopicException 
 	 **/
 	@Override
-	public boolean Unsubscribe(ClientInterface sub, TopicInterface topic) {
+	public void Unsubscribe(ClientInterface sub, TopicInterface topic) throws NonExistentTopicException, NonExistentSubException {
 		Utils.checkIfNull(sub, topic);
-		return actualUnsubscribe(sub, topic);
+		actualUnsubscribe(sub, topic);
 	}
 
 	@Override
-	public boolean Unsubscribe(PCADBrokerInterface broker, TopicInterface topic) {
+	public void Unsubscribe(PCADBrokerInterface broker, TopicInterface topic) throws NonExistentTopicException, NonExistentSubException {
 		Utils.checkIfNull(broker, topic);
-		return actualUnsubscribe(broker, topic);
+		actualUnsubscribe(broker, topic);
 	}
 
-	private boolean actualUnsubscribe(SubInterface sub, TopicInterface topic) {
+	private void actualUnsubscribe(SubInterface sub, TopicInterface topic) throws NonExistentTopicException, NonExistentSubException {
+		/**
+		 * Se il topic non esiste esco direttamente
+		 * **/
+		if(!subscribers.containsKey(topic)) throw new NonExistentTopicException();
 		/**
 		 * Se il sub non e' presente nella lista relativa al topic esco subito
 		 **/
-		if (!subscribers.get(topic).contains(sub))
-			return false;
-		subscribers.get(topic).remove(sub);
-		/**
+		if (!subscribers.get(topic).remove(sub))
+			throw new NonExistentSubException();
+			/**
 		 * Se cancello l'unico sub della lista cancello anche la key nella hastable
 		 **/
-		if (subscribers.get(topic).isEmpty()) { // sub
+		if (subscribers.get(topic).isEmpty()) { 
 			subscribers.remove(topic);
 		}
-		return true;
 	}
 
 	/**
@@ -135,15 +148,17 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * 
 	 * Un Client o un Broker possono pubblicare una news da condividere con gli
 	 * altri utenti
+	 * @throws Exception 
+	 * @throws RemoteException 
 	 **/
 	@Override
-	public void PublishNews(NewsInterface news, TopicInterface topic) throws Exception {
+	public void PublishNews(NewsInterface news, TopicInterface topic) throws RemoteException, Exception  {
 		Utils.checkIfNull(news, topic);
 		/**
 		 * Se non esiste il topic esco direttamente
 		 **/
 		if (!subscribers.containsKey(topic))
-			return;
+			throw new NonExistentTopicException();
 		/**
 		 * Altrimenti ciclo per la lista dei subscribers iscritti a un certo topic
 		 * controllando per ogni sub che non abbia deciso di silenziare le notifiche
@@ -165,26 +180,27 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * Un Client o un Broker per accedere al servizio devono in primo luogo
 	 * connettersi, cosi' facendo vado a salvarmi il suo oggetto con cui successivamente
 	 * andro' a comunicare
+	 * @throws SubscriberAlreadyConnectedException 
 	 **/
 	@Override
-	public boolean Connect(ClientInterface sub) throws RemoteException {
+	public void Connect(ClientInterface sub) throws RemoteException, SubscriberAlreadyConnectedException {
 		Utils.checkIfNull(sub);
-		return ActualConnect(sub);
+		ActualConnect(sub);
 	}
 
 	@Override
-	public boolean Connect(PCADBrokerInterface broker) throws RemoteException {
+	public void Connect(PCADBrokerInterface broker) throws RemoteException, SubscriberAlreadyConnectedException {
 		Utils.checkIfNull(broker);
-		return ActualConnect(broker);
+		ActualConnect(broker);
 	}
 
-	private boolean ActualConnect(SubInterface sub) {
+	private boolean ActualConnect(SubInterface sub) throws SubscriberAlreadyConnectedException {
 		/**
 		 * Controllo che l'utente non si sia gia' connesso, in quel caso ritorno false
 		 **/
 		if (subList.containsKey(sub))
-			return false;
-		/**
+			throw new SubscriberAlreadyConnectedException();
+			/**
 		 * In caso contrario lo aggiungo alla lista di sub salvandomi il suo oggetto
 		 **/
 		subList.put(sub, true);
@@ -209,27 +225,28 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * 
 	 * Un Client o un Broker per togliersi completamente dal servizio
 	 * devono effettuare un'operazione di disconnect
+	 * @throws NonExistentSubException 
 	 **/
 	@Override
-	public boolean Disconnect(PCADBrokerInterface broker) {
+	public void Disconnect(PCADBrokerInterface broker) throws NonExistentSubException {
 		Utils.checkIfNull(broker);
-		return actualDisconnect(broker);
+		actualDisconnect(broker);
 
 	}
 
 	@Override
-	public boolean Disconnect(ClientInterface sub) {
+	public void Disconnect(ClientInterface sub) throws NonExistentSubException {
 		Utils.checkIfNull(sub);
-		return actualDisconnect(sub);
+		actualDisconnect(sub);
 	}
 
-	private boolean actualDisconnect(SubInterface sub) {
+	private boolean actualDisconnect(SubInterface sub) throws NonExistentSubException {
 		/**
 		 * Se il sub non e' presente ritorno false, in caso contrario lo elimino
 		 **/
 		if (!subList.containsKey(sub))
-			return false;
-		subList.remove(sub);
+			throw new NonExistentSubException();
+			subList.remove(sub);
 		/**
 		 * Successivamente elimino l'utente da tutte le liste a cui era iscritto
 		 **/

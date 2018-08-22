@@ -8,6 +8,10 @@ import client.ClientInterface;
 import commons.NewsInterface;
 import commons.SubInterface;
 import commons.TopicInterface;
+import exceptions.NonExistentSubException;
+import exceptions.NonExistentTopicException;
+import exceptions.SubscriberAlreadyConnectedException;
+import exceptions.SubscriberAlreadySubbedException;
 
 /**
  * Interfaccia per rappresentare un generico Broker Contiene Metodi per
@@ -17,27 +21,27 @@ import commons.TopicInterface;
  */
 public interface PCADBrokerInterface extends SubInterface, Remote, Serializable {
 
-	public boolean Connect(ClientInterface sub) throws RemoteException;
+	public void Connect(ClientInterface sub) throws RemoteException, SubscriberAlreadyConnectedException;
 
-	public boolean Connect(PCADBrokerInterface broker) throws RemoteException;
+	public void Connect(PCADBrokerInterface broker) throws RemoteException, SubscriberAlreadyConnectedException;
 
-	public boolean Disconnect(ClientInterface sub) throws RemoteException;
+	public void Disconnect(ClientInterface sub) throws RemoteException, NonExistentSubException;
 
-	public boolean Disconnect(PCADBrokerInterface broker) throws RemoteException;
+	public void Disconnect(PCADBrokerInterface broker) throws RemoteException, NonExistentSubException;
 
-	public boolean Subscribe(ClientInterface sub, TopicInterface topic) throws RemoteException;
+	public void Subscribe(ClientInterface sub, TopicInterface topic) throws RemoteException, SubscriberAlreadySubbedException, NonExistentSubException;
 
-	public boolean Subscribe(PCADBrokerInterface broker, TopicInterface topic) throws RemoteException;
+	public void Subscribe(PCADBrokerInterface broker, TopicInterface topic) throws RemoteException, SubscriberAlreadySubbedException, NonExistentSubException;
 
-	public boolean Unsubscribe(ClientInterface sub, TopicInterface topic) throws RemoteException;
+	public void Unsubscribe(ClientInterface sub, TopicInterface topic) throws RemoteException, NonExistentTopicException, NonExistentSubException;
 
-	public boolean Unsubscribe(PCADBrokerInterface broker, TopicInterface topic) throws RemoteException;
+	public void Unsubscribe(PCADBrokerInterface broker, TopicInterface topic) throws RemoteException, NonExistentTopicException, NonExistentSubException;
 
 	public void PublishNews(NewsInterface news, TopicInterface topic) throws Exception;
 
-	public boolean StopNotification(ClientInterface client) throws RemoteException;
+	public void StopNotification(ClientInterface client) throws RemoteException, NonExistentSubException;
 
-	public boolean StopNotification(PCADBrokerInterface broker) throws RemoteException;
+	public void StopNotification(PCADBrokerInterface broker) throws RemoteException, NonExistentSubException;
 
 	public void notifyBroker(NewsInterface news) throws RemoteException, Exception;
 
