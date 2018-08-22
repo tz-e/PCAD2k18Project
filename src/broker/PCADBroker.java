@@ -152,7 +152,7 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * @throws RemoteException 
 	 **/
 	@Override
-	public void PublishNews(NewsInterface news, TopicInterface topic) throws RemoteException, Exception  {
+	public void PublishNews(NewsInterface news, TopicInterface topic) throws RemoteException, NonExistentTopicException {
 		Utils.checkIfNull(news, topic);
 		/**
 		 * Se non esiste il topic esco direttamente
@@ -261,7 +261,7 @@ public class PCADBroker implements PCADBrokerInterface {
 	}
 
 	@Override
-	public void notifyBroker(NewsInterface news) throws Exception {
+	public void notifyBroker(NewsInterface news) throws RemoteException, NonExistentTopicException  {
 		Utils.checkIfNull(news);
 		if (news == null)
 			System.out.println("Handshake ok!");

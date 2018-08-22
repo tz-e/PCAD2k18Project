@@ -17,7 +17,7 @@ public interface ClientInterface extends SubInterface, Remote, Serializable {
 
 	public void StopNotification() throws RemoteException, NonExistentSubException;
 
-	public void Publish(NewsInterface news) throws Exception, RemoteException;
+	public void Publish(NewsInterface news) throws NonExistentTopicException, RemoteException;
 
 	public void Unsubscribe(TopicInterface topic) throws RemoteException, NonExistentTopicException, NonExistentSubException;
 
@@ -25,6 +25,6 @@ public interface ClientInterface extends SubInterface, Remote, Serializable {
 
 	public void Disconnect() throws RemoteException, NonExistentSubException;
 
-	void notifyClient(NewsInterface news) throws RemoteException, Exception;
+	void notifyClient(NewsInterface news) throws RemoteException;
 
 }

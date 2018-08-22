@@ -67,7 +67,7 @@ public class Client implements ClientInterface {
 	}
 
 	@Override
-	public void Publish(NewsInterface news) throws Exception {
+	public void Publish(NewsInterface news) throws NonExistentTopicException, RemoteException  {
 		server.PublishNews(news, news.GetTopic());
 	}
 

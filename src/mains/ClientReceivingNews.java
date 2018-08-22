@@ -6,6 +6,8 @@ import java.util.Scanner;
 import client.Client;
 import commons.Topic;
 import commons.TopicInterface;
+import exceptions.NonExistentSubException;
+import exceptions.SubscriberAlreadySubbedException;
 
 public class ClientReceivingNews {
 
@@ -29,8 +31,8 @@ public class ClientReceivingNews {
 		 * { e.printStackTrace(); } }
 		 */
 		try {
-			System.out.println(client.Subscribe(topic));
-		} catch (RemoteException e) {
+			client.Subscribe(topic);
+		} catch (RemoteException | SubscriberAlreadySubbedException | NonExistentSubException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

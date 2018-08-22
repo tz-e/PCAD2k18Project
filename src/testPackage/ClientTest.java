@@ -7,26 +7,215 @@ import java.rmi.RemoteException;
 import org.junit.jupiter.api.Test;
 
 import broker.PCADBroker;
+import broker.PCADBrokerInterface;
 import client.Client;
 import client.ClientInterface;
+import commons.News;
+import commons.Topic;
+import commons.TopicInterface;
+import exceptions.NonExistentSubException;
+import exceptions.NonExistentTopicException;
+import exceptions.SubscriberAlreadyConnectedException;
+import exceptions.SubscriberAlreadySubbedException;
 
 public class ClientTest {
-	private final ClientInterface client=new Client(new PCADBroker());
+	private final PCADBrokerInterface server = new PCADBroker();
+	private final ClientInterface client = new Client(server);
+	private final TopicInterface topicP = new Topic("Politica", "Italiana");
+
 	@Test
 	public void ConnectReturnsOk() {
 		try {
-			assertTrue(client.Connect());
-		} catch (RemoteException e) {
+			client.Connect();
+		} catch (RemoteException | SubscriberAlreadyConnectedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 	@Test
-	public void ConnectTwiceReturnsFalse() {
+	public void ConnectTwiceThrowsException() {
 		try {
 			client.Connect();
-			assertFalse(client.Connect());
-		} catch (RemoteException e) {
+			assertThrows(SubscriberAlreadyConnectedException.class, () -> client.Connect());
+		} catch (RemoteException | SubscriberAlreadyConnectedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void DisconnectReturnsOk() {
+		try {
+			client.Connect();
+			client.Disconnect();
+		} catch (RemoteException | SubscriberAlreadyConnectedException | NonExistentSubException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void DisconnectTwiceThrowsException() {
+		try {
+			client.Connect();
+			client.Disconnect();
+			assertThrows(NonExistentSubException.class, () -> client.Disconnect());
+
+		} catch (RemoteException | SubscriberAlreadyConnectedException | NonExistentSubException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void StopNotificationReturnsOk() {
+		try {
+			client.Connect();
+			client.StopNotification();
+
+		} catch (RemoteException | SubscriberAlreadyConnectedException | NonExistentSubException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void StopNotificationNoClientThrowsException() {
+		try {
+			client.Connect();
+			client.Disconnect();
+			assertThrows(NonExistentSubException.class, () -> client.StopNotification());
+		} catch (RemoteException | SubscriberAlreadyConnectedException | NonExistentSubException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void UnsubscribeReturnsOk() {
+		try {
+
+			client.Connect();
+			client.Subscribe(topicP);
+			client.Unsubscribe(topicP);
+		} catch (RemoteException | SubscriberAlreadyConnectedException | SubscriberAlreadySubbedException
+				| NonExistentSubException | NonExistentTopicException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void UnsubscribeNoTopicThrowsException() {
+		try {
+			client.Connect();
+			assertThrows(NonExistentTopicException.class, () -> client.Unsubscribe(topicP));
+		} catch (RemoteException | SubscriberAlreadyConnectedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void UnsubscribeNoSubThrowsException() {
+		try {
+			ClientInterface client2 = new Client(server);
+			client2.Connect();
+			client2.Subscribe(topicP);
+			client.Connect();
+			assertThrows(NonExistentSubException.class, () -> client.Unsubscribe(topicP));
+		} catch (RemoteException | SubscriberAlreadyConnectedException | SubscriberAlreadySubbedException
+				| NonExistentSubException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void UnsubscribeNoTopicAfterOneUnsubsReturnsOk() {
+		try {
+
+			client.Connect();
+			client.Subscribe(topicP);
+			client.Unsubscribe(topicP);
+			assertThrows(NonExistentTopicException.class, () -> client.Unsubscribe(topicP));
+		} catch (RemoteException | SubscriberAlreadyConnectedException | SubscriberAlreadySubbedException
+				| NonExistentSubException | NonExistentTopicException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void SubscribeAlreadyExistingTopicReturnsOk() {
+		try {
+			ClientInterface client2 = new Client(server);
+			client2.Connect();
+			client2.Subscribe(topicP);
+			client.Connect();
+			client.Subscribe(topicP);
+		} catch (RemoteException | SubscriberAlreadyConnectedException | SubscriberAlreadySubbedException
+				| NonExistentSubException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void SubscribeNoTopicReturnsOk() {
+		try {
+			client.Connect();
+			client.Subscribe(topicP);
+		} catch (RemoteException | SubscriberAlreadyConnectedException | SubscriberAlreadySubbedException
+				| NonExistentSubException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void SubscribeAlreadySubbedThrowsException() {
+		try {
+			client.Connect();
+			client.Subscribe(topicP);
+			assertThrows(SubscriberAlreadySubbedException.class, () -> client.Subscribe(topicP));
+		} catch (RemoteException | SubscriberAlreadyConnectedException | SubscriberAlreadySubbedException
+				| NonExistentSubException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void SubscribeNonExistingSubThrowsException() {
+		try {
+			client.Connect();
+			client.Disconnect();
+			assertThrows(NonExistentSubException.class, () -> client.Subscribe(topicP));
+		} catch (RemoteException | SubscriberAlreadyConnectedException | NonExistentSubException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void PublishNoTopicThrowsException() {
+		try {
+			client.Connect();
+			assertThrows(NonExistentTopicException.class, () -> client.Publish(new News(topicP, "ohoh")));
+		} catch (RemoteException | SubscriberAlreadyConnectedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void PublishReturnsOk() {
+		try {
+			client.Connect();
+			client.Subscribe(topicP);
+			client.Publish(new News(topicP, "ohoh"));
+		} catch (RemoteException | SubscriberAlreadyConnectedException | NonExistentTopicException
+				| SubscriberAlreadySubbedException | NonExistentSubException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
