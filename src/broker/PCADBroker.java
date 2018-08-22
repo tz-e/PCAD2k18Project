@@ -13,6 +13,7 @@ import commons.TopicInterface;
 import commons.Utils;
 import exceptions.NonExistentSubException;
 import exceptions.NonExistentTopicException;
+import exceptions.SameBrokerException;
 import exceptions.SubscriberAlreadyConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 
@@ -35,27 +36,32 @@ public class PCADBroker implements PCADBrokerInterface {
 
 	/**
 	 * SUBSCRIBE
-	 * @throws NonExistentSubException 
-	 * @throws SubscriberAlreadySubbedException 
+	 * 
+	 * @throws NonExistentSubException
+	 * @throws SubscriberAlreadySubbedException
 	 **/
 	@Override
-	public void Subscribe(PCADBrokerInterface broker, TopicInterface topic) throws SubscriberAlreadySubbedException, NonExistentSubException {
+	public void Subscribe(PCADBrokerInterface broker, TopicInterface topic)
+			throws SubscriberAlreadySubbedException, NonExistentSubException {
 		Utils.checkIfNull(broker, topic);
 		actualSubscribe(broker, topic);
 	}
 
 	@Override
-	public void Subscribe(ClientInterface sub, TopicInterface topic) throws SubscriberAlreadySubbedException, NonExistentSubException {
+	public void Subscribe(ClientInterface sub, TopicInterface topic)
+			throws SubscriberAlreadySubbedException, NonExistentSubException {
 		Utils.checkIfNull(sub, topic);
 		actualSubscribe(sub, topic);
 	}
 
-	private void actualSubscribe(SubInterface sub, TopicInterface topic) throws SubscriberAlreadySubbedException, NonExistentSubException {
+	private void actualSubscribe(SubInterface sub, TopicInterface topic)
+			throws SubscriberAlreadySubbedException, NonExistentSubException {
 		System.out.println((sub instanceof ClientInterface ? "Client " : "Broker ") + "subbed to " + topic.toString());
 		/**
 		 * Se il sub non e' connesso esco direttamente
 		 **/
-		if(!subList.containsKey(sub)) throw new NonExistentSubException();
+		if (!subList.containsKey(sub))
+			throw new NonExistentSubException();
 		/**
 		 * Se non esiste il topic allora lo creo
 		 **/
@@ -68,7 +74,7 @@ public class PCADBroker implements PCADBrokerInterface {
 		 **/
 		if (subscribers.get(topic).contains(sub))
 			throw new SubscriberAlreadySubbedException();
-			/**
+		/**
 		 * Il topic esiste e il sub non e' ancora iscritto, allora lo aggiungo e ritorno
 		 * true
 		 **/
@@ -79,7 +85,8 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * STOP NOTIFICATION
 	 * 
 	 * Un client o un broker possono decidere di smettere di ricevere notifiche
-	 * @throws NonExistentSubException 
+	 * 
+	 * @throws NonExistentSubException
 	 **/
 	@Override
 	public void StopNotification(PCADBrokerInterface broker) throws NonExistentSubException {
@@ -102,7 +109,7 @@ public class PCADBroker implements PCADBrokerInterface {
 			subList.put(sub, false);
 		else
 			throw new NonExistentSubException();
-		
+
 	}
 
 	/**
@@ -110,35 +117,40 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * 
 	 * Un Broker o un Client puo' decidere di togliere la propria iscrizione da un
 	 * topic
-	 * @throws NonExistentSubException 
-	 * @throws NonExistentTopicException 
+	 * 
+	 * @throws NonExistentSubException
+	 * @throws NonExistentTopicException
 	 **/
 	@Override
-	public void Unsubscribe(ClientInterface sub, TopicInterface topic) throws NonExistentTopicException, NonExistentSubException {
+	public void Unsubscribe(ClientInterface sub, TopicInterface topic)
+			throws NonExistentTopicException, NonExistentSubException {
 		Utils.checkIfNull(sub, topic);
 		actualUnsubscribe(sub, topic);
 	}
 
 	@Override
-	public void Unsubscribe(PCADBrokerInterface broker, TopicInterface topic) throws NonExistentTopicException, NonExistentSubException {
+	public void Unsubscribe(PCADBrokerInterface broker, TopicInterface topic)
+			throws NonExistentTopicException, NonExistentSubException {
 		Utils.checkIfNull(broker, topic);
 		actualUnsubscribe(broker, topic);
 	}
 
-	private void actualUnsubscribe(SubInterface sub, TopicInterface topic) throws NonExistentTopicException, NonExistentSubException {
+	private void actualUnsubscribe(SubInterface sub, TopicInterface topic)
+			throws NonExistentTopicException, NonExistentSubException {
 		/**
 		 * Se il topic non esiste esco direttamente
-		 * **/
-		if(!subscribers.containsKey(topic)) throw new NonExistentTopicException();
+		 **/
+		if (!subscribers.containsKey(topic))
+			throw new NonExistentTopicException();
 		/**
 		 * Se il sub non e' presente nella lista relativa al topic esco subito
 		 **/
 		if (!subscribers.get(topic).remove(sub))
 			throw new NonExistentSubException();
-			/**
+		/**
 		 * Se cancello l'unico sub della lista cancello anche la key nella hastable
 		 **/
-		if (subscribers.get(topic).isEmpty()) { 
+		if (subscribers.get(topic).isEmpty()) {
 			subscribers.remove(topic);
 		}
 	}
@@ -148,11 +160,13 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * 
 	 * Un Client o un Broker possono pubblicare una news da condividere con gli
 	 * altri utenti
-	 * @throws Exception 
-	 * @throws RemoteException 
+	 * 
+	 * @throws Exception
+	 * @throws RemoteException
 	 **/
 	@Override
-	public void PublishNews(NewsInterface news, TopicInterface topic) throws RemoteException, NonExistentTopicException {
+	public void PublishNews(NewsInterface news, TopicInterface topic)
+			throws RemoteException, NonExistentTopicException {
 		Utils.checkIfNull(news, topic);
 		/**
 		 * Se non esiste il topic esco direttamente
@@ -175,12 +189,13 @@ public class PCADBroker implements PCADBrokerInterface {
 	}
 
 	/**
-	 * CONNECT 
+	 * CONNECT
 	 * 
 	 * Un Client o un Broker per accedere al servizio devono in primo luogo
-	 * connettersi, cosi' facendo vado a salvarmi il suo oggetto con cui successivamente
-	 * andro' a comunicare
-	 * @throws SubscriberAlreadyConnectedException 
+	 * connettersi, cosi' facendo vado a salvarmi il suo oggetto con cui
+	 * successivamente andro' a comunicare
+	 * 
+	 * @throws SubscriberAlreadyConnectedException
 	 **/
 	@Override
 	public void Connect(ClientInterface sub) throws RemoteException, SubscriberAlreadyConnectedException {
@@ -189,8 +204,14 @@ public class PCADBroker implements PCADBrokerInterface {
 	}
 
 	@Override
-	public void Connect(PCADBrokerInterface broker) throws RemoteException, SubscriberAlreadyConnectedException {
+	public void Connect(PCADBrokerInterface broker)
+			throws RemoteException, SubscriberAlreadyConnectedException, SameBrokerException {
 		Utils.checkIfNull(broker);
+		/**
+		 * Non posso andare a connettere un broker con se stesso
+		 **/
+		if (this==broker)
+			throw new SameBrokerException();
 		ActualConnect(broker);
 	}
 
@@ -200,7 +221,7 @@ public class PCADBroker implements PCADBrokerInterface {
 		 **/
 		if (subList.containsKey(sub))
 			throw new SubscriberAlreadyConnectedException();
-			/**
+		/**
 		 * In caso contrario lo aggiungo alla lista di sub salvandomi il suo oggetto
 		 **/
 		subList.put(sub, true);
@@ -221,11 +242,12 @@ public class PCADBroker implements PCADBrokerInterface {
 	}
 
 	/**
-	 * DISCONNECT 
+	 * DISCONNECT
 	 * 
-	 * Un Client o un Broker per togliersi completamente dal servizio
-	 * devono effettuare un'operazione di disconnect
-	 * @throws NonExistentSubException 
+	 * Un Client o un Broker per togliersi completamente dal servizio devono
+	 * effettuare un'operazione di disconnect
+	 * 
+	 * @throws NonExistentSubException
 	 **/
 	@Override
 	public void Disconnect(PCADBrokerInterface broker) throws NonExistentSubException {
@@ -246,7 +268,7 @@ public class PCADBroker implements PCADBrokerInterface {
 		 **/
 		if (!subList.containsKey(sub))
 			throw new NonExistentSubException();
-			subList.remove(sub);
+		subList.remove(sub);
 		/**
 		 * Successivamente elimino l'utente da tutte le liste a cui era iscritto
 		 **/
@@ -261,11 +283,12 @@ public class PCADBroker implements PCADBrokerInterface {
 	}
 
 	@Override
-	public void notifyBroker(NewsInterface news) throws RemoteException, NonExistentTopicException  {
-		Utils.checkIfNull(news);
+	public void notifyBroker(NewsInterface news) throws RemoteException, NonExistentTopicException {
+
 		if (news == null)
 			System.out.println("Handshake ok!");
 		else {
+			Utils.checkIfNull(news);
 			System.out.println("Notify request received - Broker");
 			PublishNews(news, news.GetTopic());
 		}
@@ -284,8 +307,7 @@ public class PCADBroker implements PCADBrokerInterface {
 			return true;
 
 		PCADBroker br = (PCADBroker) obj;
-		return br.subscribers.equals(subscribers);
+		return br.subscribers.equals(subscribers) && br.subList.equals(subList);
 	}
-
 
 }

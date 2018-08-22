@@ -10,6 +10,7 @@ import commons.SubInterface;
 import commons.TopicInterface;
 import exceptions.NonExistentSubException;
 import exceptions.NonExistentTopicException;
+import exceptions.SameBrokerException;
 import exceptions.SubscriberAlreadyConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 
@@ -23,7 +24,7 @@ public interface PCADBrokerInterface extends SubInterface, Remote, Serializable 
 
 	public void Connect(ClientInterface sub) throws RemoteException, SubscriberAlreadyConnectedException;
 
-	public void Connect(PCADBrokerInterface broker) throws RemoteException, SubscriberAlreadyConnectedException;
+	public void Connect(PCADBrokerInterface broker) throws RemoteException, SubscriberAlreadyConnectedException, SameBrokerException;
 
 	public void Disconnect(ClientInterface sub) throws RemoteException, NonExistentSubException;
 
