@@ -24,6 +24,8 @@ class PCADBrokerTest {
 	private final PCADBrokerInterface server = new PCADBroker();
 	private final PCADBrokerInterface serverToConnect = new PCADBroker();
 	private final TopicInterface topicP = new Topic("Politica", "Italiana");
+	private final ClientInterface client = new Client(server);
+
 
 	@Test
 	public void ConnectReturnsOk() {
@@ -71,6 +73,7 @@ class PCADBrokerTest {
 			e.printStackTrace();
 		}
 	}
+	
 	@Test
 	public void SubscribeReturnsOk() {
 		try {
@@ -82,12 +85,20 @@ class PCADBrokerTest {
 			e.printStackTrace();
 		}
 	}
-	@Test
+	
+	/**
+	 * Questo test e' da rivedere
+	 * BUG?
+	 * |
+	 * V**/
+	@Test 
 	public void PublishReturnsOk() {
 		try {
-			server.Connect(serverToConnect);
-			server.Subscribe(serverToConnect, topicP);
-			server.PublishNews(new News(topicP, "ohoh"), topicP);
+			serverToConnect.Connect(server);
+			serverToConnect.Subscribe(server, topicP);
+			client.Connect(server);
+			client.Subscribe(topicP);
+			serverToConnect.PublishNews(new News(topicP, "ohoh"), topicP);
 		} catch (RemoteException | SubscriberAlreadyConnectedException | NonExistentTopicException
 				| SameBrokerException | SubscriberAlreadySubbedException | NonExistentSubException e) {
 			// TODO Auto-generated catch block
