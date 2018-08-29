@@ -40,9 +40,30 @@ public class Client implements ClientInterface {
 			if (System.getSecurityManager() == null)
 				System.setSecurityManager(new SecurityManager());
 			System.setProperty("java.rmi.server.hostname", "localhost");
+						//System.setProperty("java.rmi.server.hostname", "localhost");
 			// Registry r = LocateRegistry.getRegistry("localhost",8000);
-			Registry r = LocateRegistry.getRegistry(8000);
+			Registry r = LocateRegistry.getRegistry("192.168.1.127",8000);
 			server = (PCADBrokerInterface) r.lookup(serverToConnect);
+			stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
+			server.Connect(stub);
+
+		} catch (RemoteException | NotBoundException | SubscriberAlreadyConnectedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Client() {
+		NewsToRead = new ConcurrentLinkedQueue<NewsInterface>();
+		try {
+			System.setProperty("java.security.policy", "file:./sec.policy");
+			// System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Client/");
+			if (System.getSecurityManager() == null)
+				System.setSecurityManager(new SecurityManager());
+			System.setProperty("java.rmi.server.hostname", "192.168.1.127");
+						//System.setProperty("java.rmi.server.hostname", "localhost");
+			// Registry r = LocateRegistry.getRegistry("localhost",8000);
+			Registry r = LocateRegistry.getRegistry("192.168.1.127",8000);
+			server = (PCADBrokerInterface) r.lookup("S_REMOTE");
 			stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
 			server.Connect(stub);
 
@@ -55,7 +76,11 @@ public class Client implements ClientInterface {
 	public void Connect() throws RemoteException, SubscriberAlreadyConnectedException {
 		server.Connect(stub);
 	}
-
+	@Override
+	public void Connect(PCADBrokerInterface server) throws RemoteException, SubscriberAlreadyConnectedException {
+		server.Connect(stub);
+		
+	}
 	@Override
 	public void Disconnect() throws RemoteException, NonExistentSubException {
 		server.Disconnect(stub);
@@ -92,7 +117,7 @@ public class Client implements ClientInterface {
 	public void Subscribe(TopicInterface topic) throws RemoteException, SubscriberAlreadySubbedException, NonExistentSubException {
 		server.Subscribe(stub, topic);
 	}
-
+	@Override
 	public void ReadNews() {
 		Thread thr1 = new Thread(new Reader(NewsToRead));
 		thr1.start();
@@ -118,4 +143,5 @@ public class Client implements ClientInterface {
 	public String toString() {
 		return "Client";
 	}
+	
 }
