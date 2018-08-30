@@ -1,5 +1,6 @@
 package mains;
 
+import java.net.InetAddress;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -14,7 +15,7 @@ public class MainServerToRemote {
 		PCADBrokerInterface stubRequest;
 
 	try {
-		
+		System.out.println(InetAddress.getLocalHost());
 		System.setProperty("java.security.policy", "file:./sec.policy");
 		// System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Server/");
 		if (System.getSecurityManager() == null)
