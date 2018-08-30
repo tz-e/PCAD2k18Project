@@ -10,6 +10,8 @@ import exceptions.SubscriberAlreadyConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 import commons.Reader;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -55,19 +57,21 @@ public class Client implements ClientInterface {
 	public Client() {
 		NewsToRead = new ConcurrentLinkedQueue<NewsInterface>();
 		try {
+			System.out.println(InetAddress.getLocalHost());
 			System.setProperty("java.security.policy", "file:./sec.policy");
 			// System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Client/");
 			if (System.getSecurityManager() == null)
 				System.setSecurityManager(new SecurityManager());
-			System.setProperty("java.rmi.server.hostname", "DESKTOP-R1IAP30/192.168.1.127");
-						//System.setProperty("java.rmi.server.hostname", "localhost");
+			//System.setProperty("java.rmi.server.hostname", "DESKTOP-R1IAP30/192.168.1.127");
+						System.setProperty("java.rmi.server.hostname", "127.0.1.1");
 			// Registry r = LocateRegistry.getRegistry("localhost",8000);
-			Registry r = LocateRegistry.getRegistry("192.168.1.127",8000);
+			//Registry r = LocateRegistry.getRegistry("DESKTOP-R1IAP30/192.168.1.127",8000);
+						Registry r = LocateRegistry.getRegistry("192.168.1.127",8000);
 			server = (PCADBrokerInterface) r.lookup("S_REMOTE");
 			stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
 			server.Connect(stub);
 
-		} catch (RemoteException | NotBoundException | SubscriberAlreadyConnectedException e) {
+		} catch (RemoteException | NotBoundException | SubscriberAlreadyConnectedException | UnknownHostException e) {
 			e.printStackTrace();
 		}
 	}

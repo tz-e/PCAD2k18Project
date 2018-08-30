@@ -41,7 +41,7 @@ public interface PCADBrokerInterface extends SubInterface, Remote, Serializable 
 	public void PublishNews(NewsInterface news, TopicInterface topic) throws NonExistentTopicException, RemoteException;
 
 	public void StopNotification(ClientInterface client) throws RemoteException, NonExistentSubException;
-
+	
 	public void StopNotification(PCADBrokerInterface broker) throws RemoteException, NonExistentSubException;
 
 	public void notifyBroker(NewsInterface news) throws RemoteException, NonExistentTopicException;
