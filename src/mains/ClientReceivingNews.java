@@ -32,11 +32,12 @@ public class ClientReceivingNews {
 		 */
 		try {
 			client.Subscribe(topic);
+			client.ReadNews();
 		} catch (RemoteException | SubscriberAlreadySubbedException | NonExistentSubException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		client.ReadNews();
+		
 
 	}
 
