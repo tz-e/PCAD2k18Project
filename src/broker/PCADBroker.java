@@ -225,7 +225,7 @@ public class PCADBroker implements PCADBrokerInterface {
 		 * In caso contrario lo aggiungo alla lista di sub salvandomi il suo oggetto
 		 **/
 		subList.put(sub, true);
-		System.out.println("Connection accepted by " + (sub instanceof ClientInterface ? "Client " : "Broker"));
+		System.out.println("Connection requested by " + (sub instanceof ClientInterface ? "Client " : "Broker"));
 		try {
 			/**
 			 * Dopo aver dichiarato di aver accettato la connessione notifico la notizia a
@@ -238,6 +238,8 @@ public class PCADBroker implements PCADBrokerInterface {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println("Connection accepted by " + (sub instanceof ClientInterface ? "Client " : "Broker"));
+
 		return true;
 	}
 
