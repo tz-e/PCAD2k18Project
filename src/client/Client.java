@@ -67,7 +67,7 @@ public class Client implements ClientInterface {
 						System.setProperty("java.rmi.server.hostname", "192.168.1.13");
 			// Registry r = LocateRegistry.getRegistry("localhost",8000);
 			//Registry r = LocateRegistry.getRegistry("DESKTOP-R1IAP30/192.168.1.127",8000);
-						Registry r = LocateRegistry.getRegistry("192.168.1.127",8000);
+						Registry r = LocateRegistry.getRegistry("127.0.1.1",8000);
 			server = (PCADBrokerInterface) r.lookup("S_REMOTE");
 			stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
 			server.Connect(stub);
