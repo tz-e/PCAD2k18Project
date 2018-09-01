@@ -28,7 +28,7 @@ public interface ClientInterface extends SubInterface, Remote, Serializable {
 
 	public void notifyClient(NewsInterface news) throws RemoteException;
 
-	public void ReadNews() throws RemoteException;
+	public Thread ReadNews() throws RemoteException;
 
 
 	public void Connect(PCADBrokerInterface server) throws RemoteException, SubscriberAlreadyConnectedException;

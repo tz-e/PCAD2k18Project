@@ -25,6 +25,7 @@ public class Client implements ClientInterface {
 	/**
 	 * 
 	 */
+	private Thread thr;
 	private ClientInterface stub;
 	private PCADBrokerInterface server;
 	private ConcurrentLinkedQueue<NewsInterface> NewsToRead;
@@ -63,7 +64,7 @@ public class Client implements ClientInterface {
 			if (System.getSecurityManager() == null)
 				System.setSecurityManager(new SecurityManager());
 			//System.setProperty("java.rmi.server.hostname", "DESKTOP-R1IAP30/192.168.1.127");
-						System.setProperty("java.rmi.server.hostname", "127.0.1.1");
+						System.setProperty("java.rmi.server.hostname", "192.168.1.13");
 			// Registry r = LocateRegistry.getRegistry("localhost",8000);
 			//Registry r = LocateRegistry.getRegistry("DESKTOP-R1IAP30/192.168.1.127",8000);
 						Registry r = LocateRegistry.getRegistry("192.168.1.127",8000);
@@ -88,6 +89,7 @@ public class Client implements ClientInterface {
 	@Override
 	public void Disconnect() throws RemoteException, NonExistentSubException {
 		server.Disconnect(stub);
+		if(thr.isAlive()) thr.interrupt();
 	}
 
 	@Override
@@ -122,9 +124,10 @@ public class Client implements ClientInterface {
 		server.Subscribe(stub, topic);
 	}
 	@Override
-	public void ReadNews() throws RemoteException{
-		Thread thr1 = new Thread(new Reader(NewsToRead));
-		thr1.start();
+	public Thread ReadNews() throws RemoteException{
+		thr= new Thread(new Reader(NewsToRead));
+		thr.start();
+		return thr;
 	}
 
 	@Override
