@@ -23,7 +23,7 @@ public class ClientRemote {
 			for(int i=0;i<10;++i) {
 				
 				client.Publish(new News(t, "uhu"));
-				TimeUnit.SECONDS.sleep(6);
+				TimeUnit.SECONDS.sleep(2);
 
 			}
 			th.join();
