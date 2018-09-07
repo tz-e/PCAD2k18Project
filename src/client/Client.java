@@ -19,6 +19,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Client implements ClientInterface {
 
@@ -29,15 +30,15 @@ public class Client implements ClientInterface {
 	private Thread thr;
 	private ClientInterface stub;
 	private PCADBrokerInterface server;
-	private ConcurrentLinkedQueue<NewsInterface> NewsToRead;
+	private LinkedBlockingQueue<NewsInterface> NewsToRead;
 
 	public Client(PCADBrokerInterface broker) {
 		server=broker;
 		stub=this;
-		NewsToRead = new ConcurrentLinkedQueue<NewsInterface>();
+		NewsToRead = new LinkedBlockingQueue<NewsInterface>();
 	}
 	public Client(String serverToConnect) {
-		NewsToRead = new ConcurrentLinkedQueue<NewsInterface>();
+		NewsToRead = new LinkedBlockingQueue<NewsInterface>();
 		try {
 			/*System.setProperty("java.security.policy", "file:./sec.policy");
 			// System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Client/");
@@ -58,7 +59,7 @@ public class Client implements ClientInterface {
 	}
 	
 	public Client() {
-		NewsToRead = new ConcurrentLinkedQueue<NewsInterface>();
+		NewsToRead = new LinkedBlockingQueue<NewsInterface>();
 		try {
 			initializeClient("", "", "nameServer", 8000);
 
@@ -119,7 +120,12 @@ public class Client implements ClientInterface {
 			System.out.println("Handshake ok!");
 		else {
 			System.out.println("News Received by Server! - Client");
-			NewsToRead.add(news);
+			try {
+				NewsToRead.put(news);
+			} catch (InterruptedException e) {
+				// TODO come gestisco questa eccezione?
+				e.printStackTrace();
+			}
 		}
 		// System.out.println("Topic: " + news.GetTopic() + "\\n Testo: " +
 		// news.GetText());

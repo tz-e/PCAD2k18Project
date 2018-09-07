@@ -1,6 +1,6 @@
 package commons;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -10,10 +10,10 @@ import java.util.concurrent.TimeUnit;
  * @author Daniele Atzeni
  **/
 public class Reader extends Thread {
-	private final ConcurrentLinkedQueue<NewsInterface> queue;
+	private final LinkedBlockingQueue<NewsInterface> queue;
 	private volatile boolean running;
 
-	public Reader(ConcurrentLinkedQueue<NewsInterface> q) {
+	public Reader(LinkedBlockingQueue<NewsInterface> q) {
 		running = true;
 		queue = q;
 	}
@@ -27,7 +27,7 @@ public class Reader extends Thread {
 				System.out.println("Current " + System.currentTimeMillis() / 1000 + " Last: " + last);
 				TimeUnit.SECONDS.sleep(5);
 				while (!queue.isEmpty()) {
-					NewsInterface n = queue.poll();
+					NewsInterface n = queue.take();
 					last = System.currentTimeMillis() / 1000; // mi salvo il tempo dell'ultima volta che ho letto
 																// qualcosa
 					System.out.println("Topic: " + n.GetTopic() + "\\n Testo: " + n.GetText());
