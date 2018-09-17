@@ -57,7 +57,14 @@ public class Client implements ClientInterface {
 			e.printStackTrace();
 		}
 	}
-	
+	public Client(String myIp, String serverIp, String serverName, int port) {
+		try {
+			initializeClient(myIp, serverIp, serverName, port);
+		} catch (UnknownHostException | RemoteException | NotBoundException | SubscriberAlreadyConnectedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public Client() {
 		NewsToRead = new LinkedBlockingQueue<NewsInterface>();
 		try {
@@ -120,12 +127,7 @@ public class Client implements ClientInterface {
 			System.out.println("Handshake ok!");
 		else {
 			System.out.println("News Received by Server! - Client");
-			try {
-				NewsToRead.put(news);
-			} catch (InterruptedException e) {
-				// TODO come gestisco questa eccezione?
-				e.printStackTrace();
-			}
+			NewsToRead.add(news);
 		}
 		// System.out.println("Topic: " + news.GetTopic() + "\\n Testo: " +
 		// news.GetText());
