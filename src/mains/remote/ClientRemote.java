@@ -1,4 +1,4 @@
-package mains;
+package mains.remote;
 
 import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;

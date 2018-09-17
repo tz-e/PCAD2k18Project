@@ -1,4 +1,4 @@
-package mains;
+package mains.local;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;

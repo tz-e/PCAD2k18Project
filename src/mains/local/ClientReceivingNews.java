@@ -1,4 +1,4 @@
-package mains;
+package mains.local;
 
 import java.rmi.RemoteException;
 import java.util.Scanner;
@@ -38,7 +38,7 @@ public class ClientReceivingNews {
 			e.printStackTrace();
 		}
 		
-
+		sc.close();
 	}
 
 	public static void printMenu() {

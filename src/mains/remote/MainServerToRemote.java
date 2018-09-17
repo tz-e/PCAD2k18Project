@@ -1,4 +1,4 @@
-package mains;
+package mains.remote;
 
 import java.net.InetAddress;
 import java.rmi.RemoteException;

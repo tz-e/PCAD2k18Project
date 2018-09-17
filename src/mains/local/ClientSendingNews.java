@@ -1,4 +1,4 @@
-package mains;
+package mains.local;
 
 import java.util.concurrent.TimeUnit;
 

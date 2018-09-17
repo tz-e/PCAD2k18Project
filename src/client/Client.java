@@ -51,7 +51,7 @@ public class Client implements ClientInterface {
 			server = (PCADBrokerInterface) r.lookup(serverToConnect);
 			stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
 			server.Connect(stub);*/
-			initializeClient("", "", serverToConnect,8000);
+			initializeClient("localhost", "localhost", serverToConnect,8000);
 
 		} catch (RemoteException | NotBoundException | SubscriberAlreadyConnectedException | UnknownHostException e) {
 			e.printStackTrace();
@@ -61,7 +61,7 @@ public class Client implements ClientInterface {
 	public Client() {
 		NewsToRead = new LinkedBlockingQueue<NewsInterface>();
 		try {
-			initializeClient("", "", "nameServer", 8000);
+			initializeClient("localhost", "localhost", "nameServer", 8000);
 
 		} catch (RemoteException | NotBoundException | SubscriberAlreadyConnectedException | UnknownHostException e) {
 			e.printStackTrace();
