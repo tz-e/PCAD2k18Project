@@ -41,20 +41,20 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * @throws SubscriberAlreadySubbedException
 	 **/
 	@Override
-	public void Subscribe(PCADBrokerInterface broker, TopicInterface topic)
+	public synchronized void Subscribe(PCADBrokerInterface broker, TopicInterface topic)
 			throws SubscriberAlreadySubbedException, NonExistentSubException {
 		Utils.checkIfNull(broker, topic);
 		actualSubscribe(broker, topic);
 	}
 
 	@Override
-	public void Subscribe(ClientInterface sub, TopicInterface topic)
+	public synchronized void Subscribe(ClientInterface sub, TopicInterface topic)
 			throws SubscriberAlreadySubbedException, NonExistentSubException {
 		Utils.checkIfNull(sub, topic);
 		actualSubscribe(sub, topic);
 	}
 
-	private void actualSubscribe(SubInterface sub, TopicInterface topic)
+	private synchronized void actualSubscribe(SubInterface sub, TopicInterface topic)
 			throws SubscriberAlreadySubbedException, NonExistentSubException {
 		System.out.println((sub instanceof ClientInterface ? "Client " : "Broker ") + "subbed to " + topic.toString());
 		/**
@@ -89,18 +89,18 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * @throws NonExistentSubException
 	 **/
 	@Override
-	public void StopNotification(PCADBrokerInterface broker) throws NonExistentSubException {
+	public synchronized void StopNotification(PCADBrokerInterface broker) throws NonExistentSubException {
 		Utils.checkIfNull(broker);
 		actualStopNotification(broker);
 	}
 
 	@Override
-	public void StopNotification(ClientInterface client) throws NonExistentSubException {
+	public synchronized void StopNotification(ClientInterface client) throws NonExistentSubException {
 		Utils.checkIfNull(client);
 		actualStopNotification(client);
 	}
 
-	private void actualStopNotification(SubInterface sub) throws NonExistentSubException {
+	private synchronized void actualStopNotification(SubInterface sub) throws NonExistentSubException {
 		/**
 		 * Se il subscriber esiste a prescindere metto il suo valore a false, se non
 		 * esiste ritorno false
@@ -122,20 +122,20 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * @throws NonExistentTopicException
 	 **/
 	@Override
-	public void Unsubscribe(ClientInterface sub, TopicInterface topic)
+	public synchronized void Unsubscribe(ClientInterface sub, TopicInterface topic)
 			throws NonExistentTopicException, NonExistentSubException {
 		Utils.checkIfNull(sub, topic);
 		actualUnsubscribe(sub, topic);
 	}
 
 	@Override
-	public void Unsubscribe(PCADBrokerInterface broker, TopicInterface topic)
+	public synchronized void Unsubscribe(PCADBrokerInterface broker, TopicInterface topic)
 			throws NonExistentTopicException, NonExistentSubException {
 		Utils.checkIfNull(broker, topic);
 		actualUnsubscribe(broker, topic);
 	}
 
-	private void actualUnsubscribe(SubInterface sub, TopicInterface topic)
+	private synchronized void actualUnsubscribe(SubInterface sub, TopicInterface topic)
 			throws NonExistentTopicException, NonExistentSubException {
 		/**
 		 * Se il topic non esiste esco direttamente
@@ -165,7 +165,7 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * @throws RemoteException
 	 **/
 	@Override
-	public void PublishNews(NewsInterface news, TopicInterface topic)
+	public synchronized void PublishNews(NewsInterface news, TopicInterface topic)
 			throws RemoteException, NonExistentTopicException {
 		Utils.checkIfNull(news, topic);
 		/**
@@ -198,13 +198,13 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * @throws SubscriberAlreadyConnectedException
 	 **/
 	@Override
-	public void Connect(ClientInterface sub) throws RemoteException, SubscriberAlreadyConnectedException {
+	public synchronized void Connect(ClientInterface sub) throws RemoteException, SubscriberAlreadyConnectedException {
 		Utils.checkIfNull(sub);
 		ActualConnect(sub);
 	}
 
 	@Override
-	public void Connect(PCADBrokerInterface broker)
+	public synchronized void Connect(PCADBrokerInterface broker)
 			throws RemoteException, SubscriberAlreadyConnectedException, SameBrokerException {
 		Utils.checkIfNull(broker);
 		/**
@@ -215,7 +215,7 @@ public class PCADBroker implements PCADBrokerInterface {
 		ActualConnect(broker);
 	}
 
-	private boolean ActualConnect(SubInterface sub) throws SubscriberAlreadyConnectedException {
+	private synchronized boolean ActualConnect(SubInterface sub) throws SubscriberAlreadyConnectedException {
 		/**
 		 * Controllo che l'utente non si sia gia' connesso, in quel caso ritorno false
 		 **/
@@ -252,19 +252,19 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * @throws NonExistentSubException
 	 **/
 	@Override
-	public void Disconnect(PCADBrokerInterface broker) throws NonExistentSubException {
+	public synchronized void Disconnect(PCADBrokerInterface broker) throws NonExistentSubException {
 		Utils.checkIfNull(broker);
 		actualDisconnect(broker);
 
 	}
 
 	@Override
-	public void Disconnect(ClientInterface sub) throws NonExistentSubException {
+	public synchronized void Disconnect(ClientInterface sub) throws NonExistentSubException {
 		Utils.checkIfNull(sub);
 		actualDisconnect(sub);
 	}
 
-	private boolean actualDisconnect(SubInterface sub) throws NonExistentSubException {
+	private synchronized void actualDisconnect(SubInterface sub) throws NonExistentSubException {
 		/**
 		 * Se il sub non e' presente ritorno false, in caso contrario lo elimino
 		 **/
@@ -274,18 +274,16 @@ public class PCADBroker implements PCADBrokerInterface {
 		/**
 		 * Successivamente elimino l'utente da tutte le liste a cui era iscritto
 		 **/
-		return deleteFromLists(sub);
+		deleteFromLists(sub);
 	}
 
-	private boolean deleteFromLists(SubInterface sub) {
-		for (List<SubInterface> l : subscribers.values()) {
+	private synchronized void deleteFromLists(SubInterface sub) {
+		for (List<SubInterface> l : subscribers.values()) 
 			l.remove(sub);
-		}
-		return true;
 	}
 
 	@Override
-	public void notifyBroker(NewsInterface news) throws RemoteException, NonExistentTopicException {
+	public synchronized void notifyBroker(NewsInterface news) throws RemoteException, NonExistentTopicException {
 
 		if (news == null)
 			System.out.println("Handshake ok!");
