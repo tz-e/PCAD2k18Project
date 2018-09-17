@@ -20,7 +20,7 @@ public class MainServerToRemote {
 		// System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Server/");
 		if (System.getSecurityManager() == null)
 			System.setSecurityManager(new SecurityManager());
-		System.setProperty("java.rmi.server.hostname", "127.0.1.1");
+		System.setProperty("java.rmi.server.hostname", "192.168.1.127");
 		//System.setProperty("java.rmi.server.hostname", "localhost");
 		//System.setProperty("java.rmi.server.hostname", "0.0.0.0");
 		Registry r = null;
