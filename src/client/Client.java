@@ -38,7 +38,6 @@ public class Client implements ClientInterface {
 		NewsToRead = new LinkedBlockingQueue<NewsInterface>();
 	}
 	public Client(String serverToConnect) {
-		NewsToRead = new LinkedBlockingQueue<NewsInterface>();
 		try {
 			/*System.setProperty("java.security.policy", "file:./sec.policy");
 			// System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Client/");
@@ -66,7 +65,6 @@ public class Client implements ClientInterface {
 		}
 	}
 	public Client() {
-		NewsToRead = new LinkedBlockingQueue<NewsInterface>();
 		try {
 			initializeClient("localhost", "localhost", "nameServer", 8000);
 
@@ -76,6 +74,8 @@ public class Client implements ClientInterface {
 	}
 	private void initializeClient(String myIp, String serverIp, String serverName, int port) throws UnknownHostException, RemoteException, NotBoundException, AccessException,
 			SubscriberAlreadyConnectedException {
+		NewsToRead = new LinkedBlockingQueue<NewsInterface>();
+
 		System.out.println(InetAddress.getLocalHost());
 		System.setProperty("java.security.policy", "file:./sec.policy");
 		// System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Client/");

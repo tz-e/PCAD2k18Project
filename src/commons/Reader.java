@@ -19,17 +19,21 @@ public class Reader extends Thread {
 	}
 
 	public void run() {
+		int i=0;
+
 		try {
+			TimeUnit.SECONDS.sleep(10);
+
 			System.out.println("Comincio a leggere");
 			long last = System.currentTimeMillis() / 1000;
-			while ((System.currentTimeMillis() / 1000) - last < 10 && running) {// se non leggo niente per un minuto
+			while ((System.currentTimeMillis() / 1000) - last < 20 && running) {// se non leggo niente per un minuto
 																				// esco dal ciclo
-				System.out.println("Current " + System.currentTimeMillis() / 1000 + " Last: " + last);
+				//System.out.println("Current " + System.currentTimeMillis() / 1000 + " Last: " + last);
 				TimeUnit.SECONDS.sleep(5);
 				while (!queue.isEmpty()) {
 					NewsInterface n = queue.take();
-					last = System.currentTimeMillis() / 1000; // mi salvo il tempo dell'ultima volta che ho letto
-																// qualcosa
+					i++;
+					last = System.currentTimeMillis() / 1000; // mi salvo il tempo dell'ultima volta che ho letto qualcosa
 					System.out.println("Topic: " + n.GetTopic() + "\\n Testo: " + n.GetText());
 				}
 
@@ -37,7 +41,7 @@ public class Reader extends Thread {
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
 		}
-		System.out.println("Non ho altro da leggere");
+		System.out.println("Non ho altro da leggere, ho letto "+i+" news");
 		stopThread();
 	}
 	public void stopThread() {
