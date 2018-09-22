@@ -75,8 +75,8 @@ public class PCADBroker implements PCADBrokerInterface {
 		if (subscribers.get(topic).contains(sub))
 			throw new SubscriberAlreadySubbedException();
 		/**
-		 * Il topic esiste e il sub non e' ancora iscritto, allora lo aggiungo e ritorno
-		 * true
+		 * Il topic esiste e il sub non e' ancora iscritto, allora 
+		 * lo aggiungo e ritorno true
 		 **/
 		subscribers.get(topic).add(sub);
 	}
@@ -255,7 +255,6 @@ public class PCADBroker implements PCADBrokerInterface {
 	public synchronized void Disconnect(PCADBrokerInterface broker) throws NonExistentSubException {
 		Utils.checkIfNull(broker);
 		actualDisconnect(broker);
-
 	}
 
 	@Override

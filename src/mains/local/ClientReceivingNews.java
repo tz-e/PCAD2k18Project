@@ -7,6 +7,7 @@ import client.Client;
 import commons.Topic;
 import commons.TopicInterface;
 import exceptions.NonExistentSubException;
+import exceptions.NotConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 
 public class ClientReceivingNews {
@@ -33,7 +34,7 @@ public class ClientReceivingNews {
 		try {
 			client.Subscribe(topic);
 			client.ReadNews();
-		} catch (RemoteException | SubscriberAlreadySubbedException | NonExistentSubException e) {
+		} catch (RemoteException | SubscriberAlreadySubbedException | NonExistentSubException | NotConnectedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
