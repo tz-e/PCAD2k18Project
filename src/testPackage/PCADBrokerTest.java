@@ -13,8 +13,10 @@ import client.ClientInterface;
 import commons.News;
 import commons.Topic;
 import commons.TopicInterface;
+import exceptions.AlreadyConnectedException;
 import exceptions.NonExistentSubException;
 import exceptions.NonExistentTopicException;
+import exceptions.NotConnectedException;
 import exceptions.SameBrokerException;
 import exceptions.SubscriberAlreadyConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
@@ -99,8 +101,8 @@ class PCADBrokerTest {
 			client.Connect(server);
 			client.Subscribe(topicP);
 			serverToConnect.PublishNews(new News(topicP, "ohoh"), topicP);
-		} catch (RemoteException | SubscriberAlreadyConnectedException | NonExistentTopicException
-				| SameBrokerException | SubscriberAlreadySubbedException | NonExistentSubException e) {
+		} catch (RemoteException | NonExistentTopicException
+				| SameBrokerException | SubscriberAlreadySubbedException | NonExistentSubException | AlreadyConnectedException | NotConnectedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

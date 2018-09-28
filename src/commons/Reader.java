@@ -4,7 +4,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Runnable che ha come scopo quello di leggere il contenuto di una coda ogni
+ * Reader che ha come scopo quello di leggere il contenuto di una coda ogni
  * tot secondi e stamparne il contenuto
  * 
  * @author Daniele Atzeni
@@ -14,19 +14,20 @@ public class Reader extends Thread {
 	private volatile boolean running;
 
 	public Reader(LinkedBlockingQueue<NewsInterface> q) {
-		running = true;
+		running = false;
 		queue = q;
 	}
 
 	public void run() {
 		int i=0;
+		running = true;
 
 		try {
 			TimeUnit.SECONDS.sleep(10);
 
 			System.out.println("Comincio a leggere");
 			long last = System.currentTimeMillis() / 1000;
-			while ((System.currentTimeMillis() / 1000) - last < 20 && running) {// se non leggo niente per un minuto
+			while ((System.currentTimeMillis() / 1000) - last < 60 && running) {// se non leggo niente per un minuto
 																				// esco dal ciclo
 				//System.out.println("Current " + System.currentTimeMillis() / 1000 + " Last: " + last);
 				TimeUnit.SECONDS.sleep(5);

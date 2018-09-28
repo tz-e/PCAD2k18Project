@@ -10,26 +10,40 @@ import commons.Topic;
 import commons.TopicInterface;
 import exceptions.NonExistentSubException;
 import exceptions.NonExistentTopicException;
+import exceptions.NotConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 
 public class ClientRemoteReceiving2 {
 
 	public static void main(String[] args) {
-		TopicInterface t=new Topic("C","A");
-		ClientInterface client=new Client("192.168.1.19", "192.168.1.127", "S_REMOTE", 8000);
-		
+		TopicInterface t = new Topic("C", "A");
+		ClientInterface client = new Client("192.168.1.127", "192.168.1.19", "S_REMOTE", 8000);
+
 		try {
 
 			client.Subscribe(t);
-			Thread th=client.ReadNews();
-			
+			Thread th = client.ReadNews();
+
 			th.join();
 			System.out.println("join done");
 			client.Disconnect();
 			System.out.println("disconnected");
 
-		} catch (RemoteException | SubscriberAlreadySubbedException | NonExistentSubException  | InterruptedException e) {
+		} catch (RemoteException e) {
 			e.printStackTrace();
+			return;
+		} catch (NotConnectedException e) {
+			e.printStackTrace();
+			return;
+		} catch (SubscriberAlreadySubbedException e) {
+			e.printStackTrace();
+			return;
+		} catch (NonExistentSubException e) {
+			e.printStackTrace();
+			return;
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return;
 		}
 		System.out.println("out of catch");
 

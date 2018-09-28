@@ -1,6 +1,6 @@
 package exceptions;
 
-public class SubscriberAlreadyConnectedException extends Exception{
+public class SubscriberAlreadyConnectedException extends AlreadyConnectedException{
 	private static final long serialVersionUID = 1L;
 
 	public SubscriberAlreadyConnectedException(String message) {
