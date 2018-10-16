@@ -8,9 +8,11 @@ import client.ClientInterface;
 import commons.News;
 import commons.Topic;
 import commons.TopicInterface;
+import exceptions.AlreadyConnectedException;
 import exceptions.NonExistentSubException;
 import exceptions.NonExistentTopicException;
 import exceptions.NotConnectedException;
+import exceptions.SubscriberAlreadyConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 
 public class ClientRemoteReceiving2 {
@@ -20,7 +22,8 @@ public class ClientRemoteReceiving2 {
 		ClientInterface client = new Client("192.168.1.127", "192.168.1.19", "S_REMOTE", 8000);
 
 		try {
-
+			
+			client.Connect();
 			client.Subscribe(t);
 			Thread th = client.ReadNews();
 
@@ -44,6 +47,12 @@ public class ClientRemoteReceiving2 {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			return;
+		} catch (SubscriberAlreadyConnectedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AlreadyConnectedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		System.out.println("out of catch");
 

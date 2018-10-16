@@ -221,7 +221,7 @@ public class Client implements ClientInterface {
 	}
 
 	private void notConnected() throws NotConnectedException {
-		if (connected)
+		if (!connected)
 			throw new NotConnectedException();
 	}
 }
