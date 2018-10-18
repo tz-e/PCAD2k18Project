@@ -88,11 +88,6 @@ class PCADBrokerTest {
 		}
 	}
 	
-	/**
-	 * Questo test e' da rivedere
-	 * BUG?
-	 * |
-	 * V**/
 	@Test 
 	public void PublishReturnsOk() {
 		try {

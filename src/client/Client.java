@@ -142,7 +142,7 @@ public class Client implements ClientInterface {
 	public void Disconnect() throws RemoteException, NonExistentSubException, NotConnectedException {
 		notConnected();
 		server.Disconnect(stub);
-		if (thr.isAlive())
+		if (thr!=null && thr.isAlive())
 			thr.interrupt();
 		connected=false;
 	}

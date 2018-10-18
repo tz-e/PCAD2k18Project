@@ -70,13 +70,13 @@ public class PCADBroker implements PCADBrokerInterface {
 			return;
 		}
 		/**
-		 * Il topic esiste e il sub e' gia' iscritto, ritorno false
+		 * Il topic esiste e il sub e' gia' iscritto, lancio l'eccezione
 		 **/
 		if (subscribers.get(topic).contains(sub))
 			throw new SubscriberAlreadySubbedException();
 		/**
 		 * Il topic esiste e il sub non e' ancora iscritto, allora 
-		 * lo aggiungo e ritorno true
+		 * lo aggiungo
 		 **/
 		subscribers.get(topic).add(sub);
 	}
@@ -178,14 +178,16 @@ public class PCADBroker implements PCADBrokerInterface {
 		 * controllando per ogni sub che non abbia deciso di silenziare le notifiche
 		 **/
 		System.out.println("Number of subs: " + subscribers.get(topic).size());
-		for (SubInterface sub : subscribers.get(topic))
-			if (subList.get(sub)) {
+		for (SubInterface sub : subscribers.get(topic)) {
+			Boolean temp=subList.get(sub);
+			if (temp!=null && temp.booleanValue()) {
 				System.out.println("Sending news to a " + sub.toString());
 				if (sub instanceof ClientInterface)
 					((ClientInterface) sub).notifyClient(news);
 				else
 					((PCADBrokerInterface) sub).notifyBroker(news);
 			}
+		}
 	}
 
 	/**
