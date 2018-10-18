@@ -15,46 +15,57 @@ import exceptions.NotConnectedException;
 import exceptions.SubscriberAlreadyConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 
-public class ClientRemoteReceiving2 {
+public class ClientRemoteSending extends Thread {
+	private int nOfNews;
+	private String clientName;
+	private String myIp;
+	private String serverIp;
+	private String serverName;
+	private int port;
+	private TopicInterface t;
 
-	public static void main(String[] args) {
-		TopicInterface t = new Topic("C", "A");
-		ClientInterface client = new Client("192.168.1.127", "192.168.1.19", "S_REMOTE", 8000);
+	public ClientRemoteSending(String clientName, int nOfNews, String myIp, String serverIp, String serverName,
+			int port, TopicInterface t) {
+		this.nOfNews = nOfNews;
+		this.clientName = clientName;
+		this.myIp = myIp;
+		this.serverIp = serverIp;
+		this.serverName = serverName;
+		this.port = port;
+		this.t=t;
+	}
 
+	public void run() {
+		ClientInterface client = new Client(myIp, serverIp, serverName, port);
 		try {
-			
 			client.Connect();
-			client.Subscribe(t);
-			Thread th = client.ReadNews();
+			TimeUnit.SECONDS.sleep(10);
 
-			th.join();
-			System.out.println("join done");
-			client.Disconnect();
-			System.out.println("disconnected");
-
+			for (int i = 0; i < nOfNews; ++i) {
+				client.Publish(new News(t, clientName + i));
+				TimeUnit.SECONDS.sleep(1);
+			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return;
 		} catch (NotConnectedException e) {
 			e.printStackTrace();
 			return;
-		} catch (SubscriberAlreadySubbedException e) {
-			e.printStackTrace();
-			return;
-		} catch (NonExistentSubException e) {
+		} catch (NonExistentTopicException e) {
 			e.printStackTrace();
 			return;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			return;
 		} catch (SubscriberAlreadyConnectedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return;
 		} catch (AlreadyConnectedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return;
 		}
-		System.out.println("out of catch");
-
+		System.out.println("Sending news finished by " + clientName);
+		return;
 	}
+
 }

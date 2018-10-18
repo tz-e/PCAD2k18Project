@@ -1,6 +1,9 @@
 package mains.remote;
 
 import java.rmi.RemoteException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import client.Client;
@@ -15,49 +18,76 @@ import exceptions.NotConnectedException;
 import exceptions.SubscriberAlreadyConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 
-public class ClientRemoteReceiving {
-
-	public static void main(String[] args) {
-		TopicInterface t=new Topic("C","A");
-		ClientInterface client=new Client("192.168.1.127", "192.168.1.19", "S_REMOTE", 8000);
+public class ClientRemoteReceiving<Integer> implements Callable {
+	private String clientName;
+	private String myIp;
+	private String serverIp;
+	private String serverName;
+	private int port;
+	TopicInterface[] t;
+	public ClientRemoteReceiving(String clientName, String myIp, String serverIp, String serverName,
+			int port, TopicInterface... topic ) {
+		this.clientName = clientName;
+		this.myIp = myIp;
+		this.serverIp = serverIp;
+		this.serverName = serverName;
+		this.port = port;
+		t=topic;
+	}
+	@Override
+	public Integer call() {
 		
+		ClientInterface client=new Client(myIp, serverIp, serverName, port);
+		FutureTask<Integer> th;
 		try {
 			client.Connect();
-			client.Subscribe(t);
-			Thread th=client.ReadNews();
+			for(TopicInterface topic:t) {
+				client.Subscribe(topic);	
+			}
+			th=(FutureTask<Integer>) client.ReadNews();
+			//System.out.println("disconnected");
 			
-			th.join();
-			System.out.println("join done");
-			client.Disconnect();
-			System.out.println("disconnected");
+
 
 		} catch (RemoteException e) {
 			e.printStackTrace();
-			return;
+			return null;
 		} catch (NotConnectedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return;
+			return null;
 		}catch (SubscriberAlreadySubbedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();			
-			return;
+			return null;
 		}catch (NonExistentSubException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return;
-		}catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			return null;
+		}catch (SubscriberAlreadyConnectedException e) {
 			e.printStackTrace();
-			return;
-		} catch (SubscriberAlreadyConnectedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return null;
 		} catch (AlreadyConnectedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		System.out.println("out of catch");
-
+			return null;
+		} 
+		try {
+			Integer res= th.get();
+			//client.Disconnect();//ritorno il numero di news ricevute
+			System.out.println("Letture terminate da "+ clientName);
+			return res;
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+			return null;
+		} /*catch (RemoteException e) {
+			e.printStackTrace();
+			return null;
+		} catch (NonExistentSubException e) {
+			e.printStackTrace();
+			return null;
+		} catch (NotConnectedException e) {
+			e.printStackTrace();
+			return null;
+		}*/
 	}
 }

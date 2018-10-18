@@ -2,7 +2,6 @@ package client;
 
 import broker.PCADBrokerInterface;
 import commons.NewsInterface;
-import commons.Topic;
 import commons.TopicInterface;
 import exceptions.AlreadyConnectedException;
 import exceptions.NonExistentSubException;
@@ -20,7 +19,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Client implements ClientInterface {
@@ -29,7 +28,7 @@ public class Client implements ClientInterface {
 	/**
 	 * 
 	 */
-	private Reader thr;
+	private Thread thr;
 	private ClientInterface stub;
 	private PCADBrokerInterface server;
 	private LinkedBlockingQueue<NewsInterface> NewsToRead;
@@ -72,7 +71,6 @@ public class Client implements ClientInterface {
 		try {
 			initializeClient(myIp, serverIp, serverName, port);
 		} catch (UnknownHostException | RemoteException | NotBoundException | SubscriberAlreadyConnectedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -146,6 +144,7 @@ public class Client implements ClientInterface {
 		server.Disconnect(stub);
 		if (thr.isAlive())
 			thr.interrupt();
+		connected=false;
 	}
 
 	@Override
@@ -173,7 +172,7 @@ public class Client implements ClientInterface {
 		if (news == null)
 			System.out.println("Handshake ok!");
 		else {
-			System.out.println("News Received by Server! - Client");
+			//System.err.println("News Received by Server! - Client");
 			NewsToRead.add(news);
 		}
 		// System.out.println("Topic: " + news.GetTopic() + "\\n Testo: " +
@@ -188,14 +187,14 @@ public class Client implements ClientInterface {
 	}
 
 	@Override
-	public Thread ReadNews() throws RemoteException, NotConnectedException {
+	public FutureTask<Integer> ReadNews() throws RemoteException, NotConnectedException {
 		notConnected();
 		if (thr != null)
 			thr.interrupt();
-
-		thr = new Reader(NewsToRead);
+		FutureTask<Integer> task=new FutureTask<Integer>(new Reader(NewsToRead));
+		thr = new Thread(task);
 		thr.start();
-		return thr;
+		return task;
 	}
 
 	@Override

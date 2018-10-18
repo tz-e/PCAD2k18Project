@@ -6,19 +6,19 @@ import java.util.Scanner;
 import client.Client;
 import commons.Topic;
 import commons.TopicInterface;
+import exceptions.AlreadyConnectedException;
 import exceptions.NonExistentSubException;
 import exceptions.NotConnectedException;
+import exceptions.SubscriberAlreadyConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 
 public class ClientReceivingNews {
 
 	public static void main(String[] args) {
 		Client client = new Client("SERVER_SUBBED");
-		boolean exit = false;
-		Scanner sc = new Scanner(System.in);
 		System.out.println("Let's start reading news!");
 
-		TopicInterface topic = new Topic("Sport", "VIVA IL PALLONE");
+		TopicInterface topic = new Topic("A", "B");
 		/*
 		 * while (!exit) { printMenu(); try { //choice=System.in.read(); switch
 		 * (sc.nextInt()) { case 1: System.out.println("eheehe"); client.Connect();
@@ -32,14 +32,21 @@ public class ClientReceivingNews {
 		 * { e.printStackTrace(); } }
 		 */
 		try {
+			client.Connect();
 			client.Subscribe(topic);
 			client.ReadNews();
 		} catch (RemoteException | SubscriberAlreadySubbedException | NonExistentSubException | NotConnectedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (SubscriberAlreadyConnectedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AlreadyConnectedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		sc.close();
+		
 	}
 
 	public static void printMenu() {

@@ -36,7 +36,7 @@ public class ServerSubbed {
 			stubRequest = (PCADBrokerInterface) UnicastRemoteObject.exportObject(server, 0);
 			r.rebind("SERVER_SUBBED", stubRequest);
 
-			TopicInterface topic = new Topic("Sport", "VIVA IL PALLONE");
+			TopicInterface topic = new Topic("A", "B");
 			serverToSubTo = (PCADBrokerInterface) r.lookup("SERVER_SENDING_NEWS");
 			serverToSubTo.Connect(stubRequest);
 			serverToSubTo.Subscribe(stubRequest, topic);
