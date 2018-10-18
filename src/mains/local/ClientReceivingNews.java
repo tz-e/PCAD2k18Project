@@ -12,9 +12,9 @@ import exceptions.NotConnectedException;
 import exceptions.SubscriberAlreadyConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 
-public class ClientReceivingNews {
+public class ClientReceivingNews extends Thread {
 
-	public static void main(String[] args) {
+	public void run(){
 		Client client = new Client("SERVER_SUBBED");
 		System.out.println("Let's start reading news!");
 

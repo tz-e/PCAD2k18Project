@@ -6,6 +6,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
+import commons.ClientReceiving;
+import commons.ClientSending;
 import commons.Topic;
 import commons.Utils;
 
@@ -15,9 +17,9 @@ public class RemoteTesterOneTopic {
 		ExecutorService pool=Executors.newFixedThreadPool(2);
 
 
-		FutureTask<Integer> receiveTask1=new FutureTask<Integer>(new ClientRemoteReceiving("Receiver 1", "192.168.1.127", "192.168.1.19", "S_REMOTE", 8000, new Topic("C","A")));
+		FutureTask<Integer> receiveTask1=new FutureTask<Integer>(new ClientReceiving("Receiver 1", "192.168.1.127", "192.168.1.19", "S_REMOTE", 8000, new Topic("C","A")));
 		Thread receiveThread1=new Thread(receiveTask1);
-		FutureTask<Integer> receiveTask2=new FutureTask<Integer>(new ClientRemoteReceiving("Receiver 2", "192.168.1.127", "192.168.1.19", "S_REMOTE", 8000, new Topic("C","A")));
+		FutureTask<Integer> receiveTask2=new FutureTask<Integer>(new ClientReceiving("Receiver 2", "192.168.1.127", "192.168.1.19", "S_REMOTE", 8000, new Topic("C","A")));
 		Thread receiveThread2=new Thread(receiveTask2);
 		// Creati i thread che riceveranno le news
 		
@@ -30,8 +32,8 @@ public class RemoteTesterOneTopic {
 		try {			
 
 			TimeUnit.SECONDS.sleep(10); //aspetto 10 secondi prima di lanciare i thread che invieranno le news
-			pool.submit(new ClientRemoteSending("Client1", nOfNews, "192.168.1.127", "192.168.1.19", "S_REMOTE", 8000, new Topic("C","A")));
-			pool.submit(new ClientRemoteSending("Client2", nOfNews, "192.168.1.127", "192.168.1.19", "S_REMOTE", 8000, new Topic("B","D")));
+			pool.submit(new ClientSending("Client1", nOfNews, "192.168.1.127", "192.168.1.19", "S_REMOTE", 8000, new Topic("C","A")));
+			pool.submit(new ClientSending("Client2", nOfNews, "192.168.1.127", "192.168.1.19", "S_REMOTE", 8000, new Topic("B","D")));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -10,9 +10,9 @@ import commons.Topic;
 import commons.TopicInterface;
 import exceptions.AlreadyConnectedException;
 
-public class ClientSendingNews {
+public class ClientSendingNews extends Thread {
 
-	public static void main(String[] args) {
+	public void run(){
 		Client client = new Client("SERVER_SENDING_NEWS");
 		try {
 			client.Connect();

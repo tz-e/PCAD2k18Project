@@ -1,13 +1,10 @@
-package mains.remote;
+package commons;
 
 import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
 
 import client.Client;
 import client.ClientInterface;
-import commons.News;
-import commons.Topic;
-import commons.TopicInterface;
 import exceptions.AlreadyConnectedException;
 import exceptions.NonExistentSubException;
 import exceptions.NonExistentTopicException;
@@ -15,7 +12,7 @@ import exceptions.NotConnectedException;
 import exceptions.SubscriberAlreadyConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 
-public class ClientRemoteSending extends Thread {
+public class ClientSending extends Thread {
 	private int nOfNews;
 	private String clientName;
 	private String myIp;
@@ -24,7 +21,7 @@ public class ClientRemoteSending extends Thread {
 	private int port;
 	private TopicInterface t;
 
-	public ClientRemoteSending(String clientName, int nOfNews, String myIp, String serverIp, String serverName,
+	public ClientSending(String clientName, int nOfNews, String myIp, String serverIp, String serverName,
 			int port, TopicInterface t) {
 		this.nOfNews = nOfNews;
 		this.clientName = clientName;
