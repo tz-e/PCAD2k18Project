@@ -11,6 +11,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class Utils {
 	public static String NOT_CONECTED = "You are not connected to the Server";
+	public static String LOCALHOST = "localhost";
+	public static String SERVER_SENDING_NEWS = "SERVER_SENDING_NEWS";
+	public static String SERVER_SUBBED = "SERVER_SUBBED";
+	public static int port = 8000;
+	public static String ipMainComputer="192.168.1.127";
+	public static String ipDell="192.168.1.19";
+	public static String ipLenovo="";
+
+
 
 	public static void checkIfNull(Object... objs) {
 		if (objs == null)

@@ -1,13 +1,9 @@
-package mains.local;
+package commons;
 
 import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
 
 import client.Client;
-import commons.News;
-import commons.NewsInterface;
-import commons.Topic;
-import commons.TopicInterface;
 import exceptions.AlreadyConnectedException;
 
 public class ClientSendingNews extends Thread {

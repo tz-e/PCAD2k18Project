@@ -1,11 +1,9 @@
-package mains.local;
+package commons;
 
 import java.rmi.RemoteException;
 import java.util.Scanner;
 
 import client.Client;
-import commons.Topic;
-import commons.TopicInterface;
 import exceptions.AlreadyConnectedException;
 import exceptions.NonExistentSubException;
 import exceptions.NotConnectedException;
