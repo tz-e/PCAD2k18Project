@@ -11,6 +11,8 @@ import commons.ClientSending;
 import commons.Topic;
 import static commons.Utils.ipMainComputer;
 import static commons.Utils.ipLenovo;
+import static commons.Utils.ipDell;
+
 import static commons.Utils.SERVER_REMOTE;
 import static commons.Utils.topicA;
 import static commons.Utils.port;
@@ -23,10 +25,10 @@ public class RemoteTesterOneTopic {
 		int nOfNews = 200;
 		ExecutorService pool = Executors.newFixedThreadPool(2);
 
-		FutureTask<Integer> receiveTask1 = new FutureTask<Integer>(new ClientReceiving("Receiver 1", ipMainComputer,
+		FutureTask<Integer> receiveTask1 = new FutureTask<Integer>(new ClientReceiving("Receiver 1", ipDell,
 				ipLenovo, SERVER_REMOTE, port, topicA));
 		Thread receiveThread1 = new Thread(receiveTask1);
-		FutureTask<Integer> receiveTask2 = new FutureTask<Integer>(new ClientReceiving("Receiver 2", ipMainComputer,
+		FutureTask<Integer> receiveTask2 = new FutureTask<Integer>(new ClientReceiving("Receiver 2", ipDell,
 				ipLenovo, SERVER_REMOTE, port, topicA));
 		Thread receiveThread2 = new Thread(receiveTask2);
 		// Creati i thread che riceveranno le news
@@ -37,9 +39,9 @@ public class RemoteTesterOneTopic {
 
 		try {
 			TimeUnit.SECONDS.sleep(10); // aspetto 10 secondi prima di lanciare i thread che invieranno le news
-			pool.submit(new ClientSending("Client1", nOfNews, ipMainComputer, ipLenovo, SERVER_REMOTE, port,
+			pool.submit(new ClientSending("Client1", nOfNews, ipDell, ipLenovo, SERVER_REMOTE, port,
 					topicA));
-			pool.submit(new ClientSending("Client2", nOfNews, ipMainComputer, ipLenovo, SERVER_REMOTE, port,
+			pool.submit(new ClientSending("Client2", nOfNews, ipDell, ipLenovo, SERVER_REMOTE, port,
 					topicA));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
