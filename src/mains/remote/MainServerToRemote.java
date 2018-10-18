@@ -10,6 +10,11 @@ import java.rmi.server.UnicastRemoteObject;
 import broker.PCADBroker;
 import broker.PCADBrokerInterface;
 
+import static commons.Utils.SERVER_REMOTE;
+import static commons.Utils.ipDell;
+import static commons.Utils.port;
+
+
 public class MainServerToRemote {
 	public static void main(String args[]) {
 		PCADBrokerInterface server;
@@ -22,15 +27,15 @@ public class MainServerToRemote {
 		// System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Server/");
 		if (System.getSecurityManager() == null)
 			System.setSecurityManager(new SecurityManager());
-		System.setProperty("java.rmi.server.hostname", "192.168.1.19");
+		System.setProperty("java.rmi.server.hostname", ipDell);
 		//System.setProperty("java.rmi.server.hostname", "localhost");
 		//System.setProperty("java.rmi.server.hostname", "0.0.0.0");
 		Registry r = null;
 		try {
-			r = LocateRegistry.createRegistry(8000);
+			r = LocateRegistry.createRegistry(port);
 		} catch (RemoteException e) {
 			try {
-				r = LocateRegistry.getRegistry(8000);
+				r = LocateRegistry.getRegistry(port);
 			} catch (RemoteException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -39,7 +44,7 @@ public class MainServerToRemote {
 		System.out.println("Registro trovato");
 		server = (PCADBrokerInterface) new PCADBroker();
 		stubRequest = (PCADBrokerInterface) UnicastRemoteObject.exportObject(server, 0);
-		r.rebind("S_REMOTE", stubRequest);
+		r.rebind(SERVER_REMOTE, stubRequest);
 		}
 		catch (UnknownHostException | RemoteException e1) {
 			// TODO Auto-generated catch block

@@ -1,9 +1,11 @@
-package mains.remote;
+package mains.two_servers;
 
-import static commons.Utils.LOCALHOST;
 import static commons.Utils.SERVER_SENDING_NEWS;
 import static commons.Utils.SERVER_SUBBED;
 import static commons.Utils.port;
+import static commons.Utils.ipMainComputer;
+import static commons.Utils.ipDell;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
@@ -26,14 +28,14 @@ public class TwoServerRemote_ClientSideTester {
 
 		try {
 			receiveTask = new FutureTask<Integer>(
-					new ClientReceiving("Receiver", LOCALHOST, LOCALHOST, SERVER_SUBBED, port, topic));
+					new ClientReceiving("Receiver", ipMainComputer, ipDell, SERVER_SUBBED, port, topic));
 			receiveThread = new Thread(receiveTask);
 			// Creati i thread che riceveranno le news
 			receiveThread.start();
 
 			TimeUnit.SECONDS.sleep(5);
 			// Aspetto 5 secondi prima di far partire 
-			sendThread = new ClientSending("Sender", nOfNews, LOCALHOST, LOCALHOST, SERVER_SENDING_NEWS, port,
+			sendThread = new ClientSending("Sender", nOfNews, ipMainComputer, ipDell, SERVER_SENDING_NEWS, port,
 					topic);
 			sendThread.start();
 			

@@ -1,4 +1,4 @@
-package mains.local;
+package mains.two_servers;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -14,6 +14,7 @@ import commons.Utils;
 import static commons.Utils.LOCALHOST;
 import static commons.Utils.SERVER_SUBBED;
 import static commons.Utils.SERVER_SENDING_NEWS;
+import static commons.Utils.topicA;
 
 public class TwoServerTesterLocal {
 
@@ -23,18 +24,17 @@ public class TwoServerTesterLocal {
 		int nOfNews = 20;
 		FutureTask<Integer> receiveTask = null;
 		Thread receiveThread;
-		TopicInterface topic = new Topic("A", "B");
 		try {
-			pool.submit(new ServerSendingNews(LOCALHOST, SERVER_SENDING_NEWS, 8000, topic));
+			pool.submit(new ServerSendingNews(LOCALHOST, SERVER_SENDING_NEWS, 8000, topicA));
 
 			TimeUnit.SECONDS.sleep(5);
 
-			pool.submit(new ServerSubbed(LOCALHOST, LOCALHOST, SERVER_SENDING_NEWS, SERVER_SUBBED, 8000, topic));
+			pool.submit(new ServerSubbed(LOCALHOST, LOCALHOST, SERVER_SENDING_NEWS, SERVER_SUBBED, 8000, topicA));
 
 			TimeUnit.SECONDS.sleep(5);
 
 			receiveTask = new FutureTask<Integer>(
-					new ClientReceiving("Receiver", LOCALHOST, LOCALHOST, SERVER_SUBBED, 8000, topic));
+					new ClientReceiving("Receiver", LOCALHOST, LOCALHOST, SERVER_SUBBED, 8000, topicA));
 			receiveThread = new Thread(receiveTask);
 			// Creati i thread che riceveranno le news
 			receiveThread.start();
@@ -42,7 +42,7 @@ public class TwoServerTesterLocal {
 
 			TimeUnit.SECONDS.sleep(5);
 			pool.submit(
-					new ClientSending("Sender", nOfNews = 20, LOCALHOST, LOCALHOST, SERVER_SENDING_NEWS, 8000, topic));
+					new ClientSending("Sender", nOfNews = 20, LOCALHOST, LOCALHOST, SERVER_SENDING_NEWS, 8000, topicA));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

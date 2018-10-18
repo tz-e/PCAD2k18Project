@@ -1,4 +1,4 @@
-package mains.local;
+package mains.two_servers;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;

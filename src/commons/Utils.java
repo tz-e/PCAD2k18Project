@@ -17,9 +17,11 @@ public class Utils {
 	public static int port = 8000;
 	public static String ipMainComputer="192.168.1.127";
 	public static String ipDell="192.168.1.19";
-	public static String ipLenovo="";
+	public static String ipLenovo="192.168.1.21";
+	public static TopicInterface topicA=new Topic("A", "A_A");
+	public static TopicInterface topicB=new Topic("B", "B_B");
 
-
+	public static String SERVER_REMOTE="S_REMOTE";
 
 	public static void checkIfNull(Object... objs) {
 		if (objs == null)
