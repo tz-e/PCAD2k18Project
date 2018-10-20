@@ -12,6 +12,7 @@ import commons.Topic;
 import commons.TopicInterface;
 import commons.Utils;
 import static commons.Utils.LOCALHOST;
+import static commons.Utils.port;
 import static commons.Utils.SERVER_SUBBED;
 import static commons.Utils.SERVER_SENDING_NEWS;
 import static commons.Utils.topicA;
@@ -25,16 +26,16 @@ public class TwoServerTesterLocal {
 		FutureTask<Integer> receiveTask = null;
 		Thread receiveThread;
 		try {
-			pool.submit(new ServerSendingNews(LOCALHOST, SERVER_SENDING_NEWS, 8000, topicA));
+			pool.submit(new ServerSendingNews(LOCALHOST, SERVER_SENDING_NEWS, port, topicA));
 
 			TimeUnit.SECONDS.sleep(5);
 
-			pool.submit(new ServerSubbed(LOCALHOST, LOCALHOST, SERVER_SENDING_NEWS, SERVER_SUBBED, 8000, topicA));
+			pool.submit(new ServerSubbed(LOCALHOST, LOCALHOST, SERVER_SENDING_NEWS, SERVER_SUBBED, port, topicA));
 
 			TimeUnit.SECONDS.sleep(5);
 
 			receiveTask = new FutureTask<Integer>(
-					new ClientReceiving("Receiver", LOCALHOST, LOCALHOST, SERVER_SUBBED, 8000, topicA));
+					new ClientReceiving("Receiver", LOCALHOST, LOCALHOST, SERVER_SUBBED, port, topicA));
 			receiveThread = new Thread(receiveTask);
 			// Creati i thread che riceveranno le news
 			receiveThread.start();
@@ -42,7 +43,7 @@ public class TwoServerTesterLocal {
 
 			TimeUnit.SECONDS.sleep(5);
 			pool.submit(
-					new ClientSending("Sender", nOfNews = 20, LOCALHOST, LOCALHOST, SERVER_SENDING_NEWS, 8000, topicA));
+					new ClientSending("Sender", nOfNews = 20, LOCALHOST, LOCALHOST, SERVER_SENDING_NEWS, port, topicA));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -49,17 +49,6 @@ public class Client implements ClientInterface {
 
 	public Client(String serverToConnect) {
 		try {
-			/*
-			 * System.setProperty("java.security.policy", "file:./sec.policy"); //
-			 * System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Client/"
-			 * ); if (System.getSecurityManager() == null) System.setSecurityManager(new
-			 * SecurityManager()); System.setProperty("java.rmi.server.hostname",
-			 * "localhost"); //System.setProperty("java.rmi.server.hostname", "localhost");
-			 * // Registry r = LocateRegistry.getRegistry("localhost",8000); Registry r =
-			 * LocateRegistry.getRegistry("192.168.1.127",8000); server =
-			 * (PCADBrokerInterface) r.lookup(serverToConnect); stub = (ClientInterface)
-			 * UnicastRemoteObject.exportObject(this, 0); server.Connect(stub);
-			 */
 			initializeClient("localhost", "localhost", serverToConnect, 8000);
 
 		} catch (RemoteException | NotBoundException | SubscriberAlreadyConnectedException | UnknownHostException e) {
@@ -91,19 +80,11 @@ public class Client implements ClientInterface {
 
 		System.out.println(InetAddress.getLocalHost());
 		System.setProperty("java.security.policy", "file:./sec.policy");
-		// System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Client/");
 		if (System.getSecurityManager() == null)
 			System.setSecurityManager(new SecurityManager());
-		// System.setProperty("java.rmi.server.hostname",
-		// "DESKTOP-R1IAP30/192.168.1.127");
 		System.setProperty("java.rmi.server.hostname", myIp);
-		// Registry r = LocateRegistry.getRegistry("localhost",8000);
-		// Registry r =
-		// LocateRegistry.getRegistry("DESKTOP-R1IAP30/192.168.1.127",8000);
 		Registry r = LocateRegistry.getRegistry(serverIp, port);
 
-		// server = (PCADBrokerInterface) r.lookup(serverName);
-		// stub = (ClientInterface) UnicastRemoteObject.exportObject(this, 0);
 		initializeFields(null, (PCADBrokerInterface) r.lookup(serverName),
 				(ClientInterface) UnicastRemoteObject.exportObject(this, 0), new LinkedBlockingQueue<NewsInterface>(),
 				false);
@@ -113,7 +94,6 @@ public class Client implements ClientInterface {
 	@Override
 	public void Connect() throws RemoteException, SubscriberAlreadyConnectedException, AlreadyConnectedException {
 		actualConnect(server);
-
 	}
 
 	@Override

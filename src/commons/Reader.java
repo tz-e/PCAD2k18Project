@@ -36,7 +36,7 @@ public class Reader implements Callable<Integer> {
 					NewsInterface n = queue.take();
 					i++;
 					last = System.currentTimeMillis() / 1000; // mi salvo il tempo dell'ultima volta che ho letto qualcosa
-					//System.err.println("Topic: " + n.GetTopic() + "\\n Testo: " + n.GetText());
+					System.err.println("Topic: " + n.GetTopic() + "\\n Testo: " + n.GetText());
 				}
 
 			}

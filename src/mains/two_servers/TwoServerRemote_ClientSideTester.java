@@ -5,6 +5,9 @@ import static commons.Utils.SERVER_SUBBED;
 import static commons.Utils.port;
 import static commons.Utils.ipMainComputer;
 import static commons.Utils.ipDell;
+import static commons.Utils.ipLenovo;
+import static commons.Utils.topicA;
+
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -19,7 +22,6 @@ public class TwoServerRemote_ClientSideTester {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		TopicInterface topic = new Topic("A", "B");
 		FutureTask<Integer> receiveTask = null;
 		Thread receiveThread;
 		Thread sendThread;
@@ -28,15 +30,15 @@ public class TwoServerRemote_ClientSideTester {
 
 		try {
 			receiveTask = new FutureTask<Integer>(
-					new ClientReceiving("Receiver", ipMainComputer, ipDell, SERVER_SUBBED, port, topic));
+					new ClientReceiving("Receiver", ipDell, ipLenovo, SERVER_SUBBED, port, topicA));
 			receiveThread = new Thread(receiveTask);
 			// Creati i thread che riceveranno le news
 			receiveThread.start();
 
 			TimeUnit.SECONDS.sleep(5);
 			// Aspetto 5 secondi prima di far partire 
-			sendThread = new ClientSending("Sender", nOfNews, ipMainComputer, ipDell, SERVER_SENDING_NEWS, port,
-					topic);
+			sendThread = new ClientSending("Sender", nOfNews, ipDell, ipLenovo, SERVER_SENDING_NEWS, port,
+					topicA);
 			sendThread.start();
 			
 			res = receiveTask.get().intValue();

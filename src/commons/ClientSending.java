@@ -61,7 +61,7 @@ public class ClientSending extends Thread {
 			e.printStackTrace();
 			return;
 		}
-		System.out.println("Sending news finished by " + clientName);
+		System.out.println(clientName+ "ha finito di inviare news");
 		return;
 	}
 

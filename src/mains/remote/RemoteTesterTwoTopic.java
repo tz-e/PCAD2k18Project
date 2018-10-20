@@ -1,5 +1,6 @@
 package mains.remote;
 import static commons.Utils.ipMainComputer;
+import static commons.Utils.ipLenovo;
 import static commons.Utils.SERVER_REMOTE;
 import static commons.Utils.topicA;
 import static commons.Utils.topicB;
@@ -20,7 +21,7 @@ public class RemoteTesterTwoTopic {
 	public static void main(String[] args) {
 		int nOfNews=20;
 		ExecutorService pool=Executors.newFixedThreadPool(3);;
-		FutureTask<Integer> receiveTask1=new FutureTask<Integer>(new ClientReceiving("Receiver 1", ipMainComputer, ipDell, SERVER_REMOTE, port, topicA, topicB));
+		FutureTask<Integer> receiveTask1=new FutureTask<Integer>(new ClientReceiving("Receiver 1", ipDell , ipLenovo, SERVER_REMOTE, port, topicA, topicB));
 		Thread receiveThread1=new Thread(receiveTask1);
 		// Creati i thread che riceveranno le news
 		
@@ -30,8 +31,8 @@ public class RemoteTesterTwoTopic {
 		
 		try {
 			TimeUnit.SECONDS.sleep(10); //aspetto 10 secondi prima di lanciare i thread che invieranno le news
-			pool.submit(new ClientSending("Client1", nOfNews, ipMainComputer, ipDell, SERVER_REMOTE, port, topicA));
-			pool.submit(new ClientSending("Client2", nOfNews, ipMainComputer, ipDell, SERVER_REMOTE, port, topicB));
+			pool.submit(new ClientSending("Client1", nOfNews, ipDell, ipLenovo, SERVER_REMOTE, port, topicA));
+			pool.submit(new ClientSending("Client2", nOfNews, ipDell, ipLenovo, SERVER_REMOTE, port, topicB));
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();

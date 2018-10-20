@@ -22,7 +22,7 @@ import commons.Utils;
 
 public class RemoteTesterOneTopic {
 	public static void main(String[] args) {
-		int nOfNews = 200;
+		int nOfNews = 20;
 		ExecutorService pool = Executors.newFixedThreadPool(2);
 
 		FutureTask<Integer> receiveTask1 = new FutureTask<Integer>(new ClientReceiving("Receiver 1", ipDell,
@@ -69,6 +69,7 @@ public class RemoteTesterOneTopic {
 			System.out.println("Tutto sembra essere andato okey.");
 		else
 			System.out.println("Qualcosa e' andato storto.");
+		
 		Utils.shutdownAndAwaitTermination(pool);
 	}
 }
