@@ -1,4 +1,4 @@
-package broker;
+ package broker;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
@@ -6,8 +6,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
 
 import client.ClientInterface;
+import commons.MyHashSet;
 import commons.NewsInterface;
 import commons.SubInterface;
 import commons.TopicInterface;
@@ -27,11 +29,11 @@ public class PCADBroker implements PCADBrokerInterface {
 	private static final long serialVersionUID = 1L;
 
 	private ConcurrentHashMap<SubInterface, Boolean> subList;
-	private ConcurrentHashMap<TopicInterface, HashSet<SubInterface>> subscribers;
+	private ConcurrentHashMap<TopicInterface, MyHashSet<SubInterface>> subscribers;
 
 	public PCADBroker() {
 		subList = new ConcurrentHashMap<SubInterface, Boolean>();
-		subscribers = new ConcurrentHashMap<TopicInterface, HashSet<SubInterface>>();
+		subscribers = new ConcurrentHashMap<TopicInterface, MyHashSet<SubInterface>>();
 	}
 
 	/**
@@ -62,23 +64,13 @@ public class PCADBroker implements PCADBrokerInterface {
 		 * if (subList.computeIfPresent(sub, (key, value) -> value = new Boolean(false)) == null)
 			throw new NonExistentSubException();
 		 **/
-		//if (!subList.containsKey(sub))
-			//throw new NonExistentSubException();
-		subList.computeIfAbsent(sub, k-> {throw new NonExistentSubException();});
+
+		if(subList.computeIfAbsent(sub, k-> null)==null) throw new NonExistentSubException();
 			
 			
-			
-			
-			
-		//subscribers.compute(topic, (key, value)-> value==null ? new HashSet<SubInterface>().add(sub) : value.add(sub));
-		subscribers.compute(topic, (key, value)-> {
-			if(value==null) {
-				value=new HashSet<SubInterface>();
-				value.add(sub);
-			}
-			else
-				value.add(sub);
-		});
+	
+		subscribers.compute(topic, (k, v) -> v == null ? new MyHashSet<SubInterface>(sub)  :  v.addAndReturn(sub));	
+
 			
 		/**
 		 * Se non esiste il topic allora lo creo
@@ -169,10 +161,10 @@ public class PCADBroker implements PCADBrokerInterface {
 			throw new NonExistentSubException();
 		/**
 		 * Se cancello l'unico sub della lista cancello anche la key nella hastable
-		 **/
+		
 		if (subscribers.get(topic).isEmpty()) {
 			subscribers.remove(topic);
-		}
+		} **/
 	}
 
 	/**
