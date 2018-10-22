@@ -35,7 +35,7 @@ public class TwoServerTesterLocal {
 			TimeUnit.SECONDS.sleep(5);
 
 			receiveTask = new FutureTask<Integer>(
-					new ClientReceiving("Receiver", LOCALHOST, LOCALHOST, SERVER_SUBBED, port, topicA));
+					new ClientReceiving<>("Receiver", LOCALHOST, LOCALHOST, SERVER_SUBBED, port, topicA));
 			receiveThread = new Thread(receiveTask);
 			// Creati i thread che riceveranno le news
 			receiveThread.start();

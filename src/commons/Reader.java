@@ -28,7 +28,7 @@ public class Reader implements Callable<Integer> {
 
 			System.out.println("Comincio a leggere");
 			long last = System.currentTimeMillis() / 1000;
-			while ((System.currentTimeMillis() / 1000) - last < 60 && running) {// se non leggo niente per un minuto
+			while ((System.currentTimeMillis() / 1000) - last < 30 && running) {// se non leggo niente per un minuto
 																				// esco dal ciclo
 				//System.out.println("Current " + System.currentTimeMillis() / 1000 + " Last: " + last);
 				Thread.sleep(5);

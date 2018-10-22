@@ -130,7 +130,9 @@ public class Client implements ClientInterface {
 	@Override
 	public void StopNotification() throws RemoteException, NonExistentSubException, NotConnectedException {
 		notConnected();
-		server.StopNotification(stub);
+		//server.StopNotification(stub);
+		thr.interrupt();
+		thr=null;
 	}
 
 	@Override
