@@ -23,7 +23,7 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	private MySet<SubInterface> alt;
 	// private ConcurrentHashMap<SubInterface, Boolean> subList;
 	private ConcurrentHashMap<TopicInterface, MySet<SubInterface>> subscribers;
 
@@ -67,9 +67,12 @@ public class PCADBroker implements PCADBrokerInterface {
 		if (subscribers.compute(topic,
 				(k, v) -> v == null ? new MySet<SubInterface>(sub) : v.addAndReturn(sub)) == null)
 			throw new SubscriberAlreadySubbedException();
-		System.out.println(topic.toString()+ " ha: "+ subscribers.get(topic).size()+" subs");
+		System.out.println(topic.toString() + " ha: " + subscribers.get(topic).size() + " subs");
 
-		/**
+		/**	private void deleteFromLists(SubInterface sub) {
+		for (MySet<SubInterface> l : subscribers.values())
+			l.remove(sub);
+	}
 		 * Se non esiste il topic allora lo creo
 		 * 
 		 * if (!subscribers.containsKey(topic)) { subscribers.put(topic, new
@@ -139,10 +142,15 @@ public class PCADBroker implements PCADBrokerInterface {
 	private void actualUnsubscribe(SubInterface sub, TopicInterface topic)
 			throws NonExistentTopicException, NonExistentSubException {
 		// NonExistentTopicException va tolta o no?
-
+		/**
+		 * Se il topic e' presente l'operazione viene eseguita, nel caso il risultato
+		 * fosse null significa che il Subscriber non era presente nella lista di quel
+		 * certo topic, quindi devo lanciare l'opportuna eccezione, in caso contrario
+		 * esco
+		 */
 		if (subscribers.computeIfPresent(topic, (k, v) -> v.removeAndReturn(sub)) == null)
 			throw new NonExistentSubException();
-
+		
 		/**
 		 * Se il topic non esiste esco direttamente
 		 * 
@@ -161,24 +169,23 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * 
 	 * Un Client o un Broker possono pubblicare una news da condividere con gli
 	 * altri utenti
+	 * 
 	 * @throws Exception
 	 * @throws RemoteException
 	 **/
 	@Override
-	public void PublishNews(NewsInterface news, TopicInterface topic)
-			throws RemoteException {
+	public void PublishNews(NewsInterface news, TopicInterface topic) throws RemoteException {
 		Utils.checkIfNull(news, topic);
 		/**
 		 * Se non esiste il topic lo creo
 		 **/
-		subscribers.computeIfAbsent(topic, v->new MySet<SubInterface>());
-		System.out.println("ehy");
+		subscribers.computeIfAbsent(topic, v -> new MySet<SubInterface>());
+		//System.out.println("ehy");
 		/**
 		 * Altrimenti ciclo per la lista dei subscribers iscritti a un certo topic
 		 * controllando per ogni sub che non abbia deciso di silenziare le notifiche
 		 **/
-		Thread thr =new Thread(new PublishOperation(subscribers.get(topic).values(), news));
-		thr.start();
+		new Thread(new PublishOperation(subscribers.get(topic).values(), news)).start();
 		/*
 		 * for (SubInterface sub : subscribers.get(topic)) { Boolean temp =
 		 * subList.get(sub); if (temp != null && temp.booleanValue()) {
@@ -247,6 +254,7 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * 
 	 * Un Client o un Broker per togliersi completamente dal servizio devono
 	 * effettuare un'operazione di disconnect
+	 * 
 	 * @throws NonExistentSubException
 	 **/
 	@Override
@@ -266,11 +274,10 @@ public class PCADBroker implements PCADBrokerInterface {
 		 * Se il sub non e' presente ritorno false, in caso contrario lo elimino
 		 * 
 		 * if (!subList.containsKey(sub)) throw new NonExistentSubException();
-		 * subList.remove(sub); 
-		 /** 
-		  * Elimino l'utente da tutte le liste a cui era iscritto
+		 * subList.remove(sub); /** Elimino l'utente da tutte le liste a cui era
+		 * iscritto
 		 **/
-		
+
 		for (MySet<SubInterface> l : subscribers.values())
 			l.remove(sub);
 	}

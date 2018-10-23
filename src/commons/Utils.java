@@ -1,5 +1,7 @@
 package commons;
 
+import java.io.Console;
+import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -48,5 +50,26 @@ public class Utils {
 			return;
 		}
 	}
-
+	public static String printMenuClient() {
+		return "1. Connect to a Broker \n"
+				+ "2. Disconnect from the Broker\n"
+				+ "3. Subscribe to a certain Topic\n"
+				+ "4. Unsubscribe from a certain Topic\n"
+				+ "5. Publish news\n"
+				+ "6. Exit\n";
+	}
+	public static String getAStringNotNull(Console console, String message) {
+		String t;
+		while(true) {
+			t=console.readLine(message);
+			if(t!=null) return t;
+			System.out.println("Errore, devi inserire qualcosa");
+		}
+		
+	}
+	public static int getTheTopicToUnsub(LinkedList<TopicInterface> l) {
+		
+		
+		
+	}
 }
