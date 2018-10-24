@@ -7,6 +7,7 @@ import java.util.List;
 
 import client.Client;
 import client.ClientInterface;
+import commons.News;
 import commons.Topic;
 import commons.TopicInterface;
 import exceptions.AlreadyConnectedException;
@@ -109,9 +110,33 @@ public class clientMenu extends Thread {
 					System.out.println("Non sei connesso a nessun broker!");
 					break;
 				}
+
 				tempInt = Integer.parseInt(console.readLine(
 						"La news che vuoi pubblicare e' relativa a uno dei seguenti topic? Scegli la sua posizione nel caso, -1 altrimenti.\n"
 								+ showTheTopics(topicList)));
+				try {
+					if (tempInt == -1 || (tempInt >= 0 && tempInt < topicList.size())) {
+						tempTopic = new Topic(console.readLine("Qual e' il titolo del topic?"),
+								console.readLine("Qual e' la descrizione del topic?"));
+						client.Publish(new News(tempTopic, console.readLine("Qual e' il messaggio della news?")));
+
+					} else
+						client.Publish(
+								new News(topicList.get(tempInt), console.readLine("Qual e' il messaggio della news?")));
+				} catch (RemoteException | NonExistentTopicException | NotConnectedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			case "6":
+				if(nomeBroker!=null) 
+					try {
+						client.Disconnect();
+					} catch (RemoteException | NonExistentSubException | NotConnectedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return;
 				
 			}
 

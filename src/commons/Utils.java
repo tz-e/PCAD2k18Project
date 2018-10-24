@@ -56,6 +56,10 @@ public class Utils {
 		return "1. Connect to a Broker \n" + "2. Disconnect from the Broker\n" + "3. Subscribe to a certain Topic\n"
 				+ "4. Unsubscribe from a certain Topic\n" + "5. Publish news\n" + "6. Exit\n";
 	}
+	public static String printMenuServer() {
+		return "1. Connect to another Broker \n" + "2. Disconnect from the Broker\n" + "3. Subscribe to a certain Topic\n"
+				+ "4. Unsubscribe from a certain Topic\n" + "5 Exit\n";
+	}
 
 	public static String getAStringNotNull(Console console, String message) {
 		String t;
