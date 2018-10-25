@@ -1,6 +1,6 @@
-package commons;
-
+package commons;//  
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import client.Client;
@@ -13,23 +13,22 @@ import exceptions.SubscriberAlreadyConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 
 public class ClientSending extends Thread {
-	private int nOfNews;
 	private String clientName;
 	private String myIp;
 	private String serverIp;
 	private String serverName;
 	private int port;
 	private TopicInterface t;
-
-	public ClientSending(String clientName, int nOfNews, String myIp, String serverIp, String serverName,
-			int port, TopicInterface t) {
-		this.nOfNews = nOfNews;
+	List<NewsInterface> newsList;
+	public ClientSending(String clientName,  String myIp, String serverIp, String serverName, int port,
+			TopicInterface t, List<NewsInterface> news) {
 		this.clientName = clientName;
 		this.myIp = myIp;
 		this.serverIp = serverIp;
 		this.serverName = serverName;
 		this.port = port;
-		this.t=t;
+		this.t = t;
+		this.newsList=news;
 	}
 
 	public void run() {
@@ -38,8 +37,8 @@ public class ClientSending extends Thread {
 			client.Connect();
 			TimeUnit.SECONDS.sleep(10);
 
-			for (int i = 0; i < nOfNews; ++i) {
-				client.Publish(new News(t, clientName + i));
+			for (NewsInterface news:newsList) {
+				client.Publish(news);
 				TimeUnit.SECONDS.sleep(1);
 			}
 		} catch (RemoteException e) {
@@ -61,8 +60,7 @@ public class ClientSending extends Thread {
 			e.printStackTrace();
 			return;
 		}
-		System.out.println(clientName+ " ha finito di inviare news");
+		System.out.println(clientName + " ha finito di inviare news");
 		return;
 	}
-
 }

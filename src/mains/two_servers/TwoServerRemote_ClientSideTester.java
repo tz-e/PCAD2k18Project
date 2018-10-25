@@ -7,14 +7,18 @@ import static commons.Utils.ipMainComputer;
 import static commons.Utils.ipDell;
 import static commons.Utils.ipLenovo;
 import static commons.Utils.topicA;
+import static commons.Utils.LOCALHOST;
+import static commons.Utils.createNews;
+import static commons.Utils.listsAreEqual;
 
-
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import commons.ClientReceiving;
 import commons.ClientSending;
+import commons.NewsInterface;
 import commons.Topic;
 import commons.TopicInterface;
 
@@ -22,29 +26,32 @@ public class TwoServerRemote_ClientSideTester {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		FutureTask<Integer> receiveTask = null;
+		FutureTask<List<NewsInterface>> receiveTask = null;
 		Thread receiveThread;
 		Thread sendThread;
-		int res = 0;
+		int noOfNews=20;
+		List<NewsInterface> res;
+		List<NewsInterface> initialNews=createNews(20, topicA, "News A numero: ");
+
 		int nOfNews = 20;
 
 		try {
-			receiveTask = new FutureTask<Integer>(
-					new ClientReceiving("Receiver", ipDell, ipLenovo, SERVER_SUBBED, port, topicA));
+			receiveTask = new FutureTask<List<NewsInterface>>(
+					new ClientReceiving("Receiver", LOCALHOST, LOCALHOST, SERVER_SUBBED, port, topicA));
 			receiveThread = new Thread(receiveTask);
 			// Creati i thread che riceveranno le news
 			receiveThread.start();
 
 			TimeUnit.SECONDS.sleep(5);
 			// Aspetto 5 secondi prima di far partire 
-			sendThread = new ClientSending("Sender", nOfNews, ipDell, ipLenovo, SERVER_SENDING_NEWS, port,
-					topicA);
+			sendThread = new ClientSending("Sender", LOCALHOST, LOCALHOST, SERVER_SENDING_NEWS, port,
+					topicA, initialNews);
 			sendThread.start();
 			
-			res = receiveTask.get().intValue();
+			//res = 
 			//Recupero il numero di news lette
 			
-			if (res == nOfNews)
+			if (listsAreEqual(receiveTask.get(),initialNews))
 				//Controllo che il numero di news lette e inviate sia lo stesso
 				System.out.println("Tutto sembra essere andato okey.");
 			else

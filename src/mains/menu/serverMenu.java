@@ -10,6 +10,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 import broker.PCADBroker;
 import broker.PCADBrokerInterface;
@@ -32,10 +33,12 @@ import static commons.Utils.LOCALHOST;
 import static commons.Utils.SERVER_REMOTE;
 import static commons.Utils.port;
 import static commons.Utils.getAStringNotNull;
+import static commons.Utils.getLineWithMessage;
 import static commons.Utils.showTheTopics;
+import static commons.Utils.printMenuServer;
 
 public class serverMenu extends Thread {
-	Console console = System.console();
+	Scanner scanner= new Scanner(System.in);
 	String nomeBroker;
 	private PCADBrokerInterface serverToSubTo;
 
@@ -49,7 +52,7 @@ public class serverMenu extends Thread {
 	@Override
 	public void run() {
 
-		nomeBroker = getAStringNotNull(console, "Qual e' il nome di questo broker?");
+		nomeBroker = getAStringNotNull(scanner, "Qual e' il nome di questo broker?");
 		try {
 			System.out.println(InetAddress.getLocalHost());
 
@@ -81,14 +84,14 @@ public class serverMenu extends Thread {
 		System.out.println("Ora sono pronto a ricevere richieste!");
 
 		while (true) {
-			switch (console.readLine(printMenuClient())) {
+			switch (getLineWithMessage(scanner,printMenuServer())) {
 			case "1":
 				if (nomeBrokerToConnect != null) {
 					System.out.println(
 							"Sei gia' iscritto a un broker, prima di effettuare questa operazione devi disconnetterti!");
 					break;
 				}
-				nomeBrokerToConnect = getAStringNotNull(console, "Qual e' il nome del broker?");
+				nomeBrokerToConnect = getAStringNotNull(scanner, "Qual e' il nome del broker?");
 				try {
 					serverToSubTo=(PCADBrokerInterface) r.lookup(nomeBrokerToConnect);
 					serverToSubTo.Connect(stubRequest);
@@ -103,7 +106,6 @@ public class serverMenu extends Thread {
 				try {
 					stubRequest.Disconnect(serverToSubTo);
 				} catch (RemoteException | NonExistentSubException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				System.out.println("Disconnesso da " + nomeBrokerToConnect + "!");
@@ -115,8 +117,8 @@ public class serverMenu extends Thread {
 					break;
 				}
 				try {
-					tempTopic = new Topic(getAStringNotNull(console, "Qual e' il nome del topic?"),
-							getAStringNotNull(console, "Qual e' la sua descrizione?"));
+					tempTopic = new Topic(getAStringNotNull(scanner, "Qual e' il nome del topic?"),
+							getAStringNotNull(scanner, "Qual e' la sua descrizione?"));
 					stubRequest.Subscribe(serverToSubTo, tempTopic);
 				} catch (RemoteException | SubscriberAlreadySubbedException | NonExistentSubException e) {
 					// TODO Auto-generated catch block
@@ -136,7 +138,7 @@ public class serverMenu extends Thread {
 					System.out.println("Non sei iscritto a nessun topic.");
 					break;
 				}
-				tempInt = getTheTopic(topicList, console, showTheTopics(topicList));
+				tempInt = getTheTopic(topicList, scanner, showTheTopics(topicList));
 				try {
 					stubRequest.Unsubscribe(serverToSubTo,topicList.get(tempInt));
 				} catch (RemoteException | NonExistentTopicException | NonExistentSubException e) {
@@ -154,6 +156,7 @@ public class serverMenu extends Thread {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+				scanner.close();
 				return;
 
 			}

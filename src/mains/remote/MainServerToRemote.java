@@ -12,6 +12,8 @@ import broker.PCADBrokerInterface;
 
 import static commons.Utils.SERVER_REMOTE;
 import static commons.Utils.ipDell;
+import static commons.Utils.LOCALHOST;
+
 import static commons.Utils.port;
 
 
@@ -27,7 +29,7 @@ public class MainServerToRemote {
 		// System.setProperty("java.rmi.server.codebase","file:${workspace_loc}/Server/");
 		if (System.getSecurityManager() == null)
 			System.setSecurityManager(new SecurityManager());
-		System.setProperty("java.rmi.server.hostname", ipDell);
+		System.setProperty("java.rmi.server.hostname", LOCALHOST);
 		//System.setProperty("java.rmi.server.hostname", "localhost");
 		//System.setProperty("java.rmi.server.hostname", "0.0.0.0");
 		Registry r = null;

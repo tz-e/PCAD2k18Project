@@ -3,6 +3,7 @@ package commons;
 import java.io.Console;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -54,41 +55,62 @@ public class Utils {
 
 	public static String printMenuClient() {
 		return "1. Connect to a Broker \n" + "2. Disconnect from the Broker\n" + "3. Subscribe to a certain Topic\n"
-				+ "4. Unsubscribe from a certain Topic\n" + "5. Publish news\n" + "6. Exit\n";
+				+ "4. Unsubscribe from a certain Topic\n" + "5. Publish news\n" + "6. Start reading news\n"
+				+ "7. Stop reading news\n" + "8. Exit\n";
 	}
+
 	public static String printMenuServer() {
-		return "1. Connect to another Broker \n" + "2. Disconnect from the Broker\n" + "3. Subscribe to a certain Topic\n"
-				+ "4. Unsubscribe from a certain Topic\n" + "5 Exit\n";
+		return "1. Connect to another Broker \n" + "2. Disconnect from the Broker\n"
+				+ "3. Subscribe to a certain Topic\n" + "4. Unsubscribe from a certain Topic\n" + "5 Exit\n";
 	}
 
-	public static String getAStringNotNull(Console console, String message) {
-		String t;
-		while (true) {
-			t = console.readLine(message);
-			if (t != null)
-				return t;
-			System.out.println("Errore, devi inserire qualcosa");
+	public static String getAStringNotNull(Scanner scanner, String message) {
+		String t = null;
+		System.out.println(message);
+
+		while (scanner.hasNextLine()) {
+			t = scanner.nextLine();
+			break;
 		}
-
+		return t;
 	}
 
-	public static int getTheTopic(List<TopicInterface> l, Console console, String listOfTopics) {
+	public static int getTheTopic(List<TopicInterface> l, Scanner scanner, String listOfTopics) {
 		int i;
-		System.out.println("Quale vuoi selezionare? (scegli il numero)\n"+listOfTopics);
+		System.out.println("Quale vuoi selezionare? (scegli il numero)\n" + listOfTopics);
 		while (true) {
-			i = Integer.parseInt(console.readLine());
-			if(i>=0 && i<l.size()) break;
+			i = Integer.parseInt(scanner.nextLine());
+			if (i >= 0 && i < l.size())
+				break;
 			System.out.println("Metti un indice corretto.");
 		}
 		return i;
 
 	}
 
+	public static String getLineWithMessage(Scanner scanner, String message) {
+		System.out.println(message);
+		return scanner.nextLine();
+	}
+
 	public static String showTheTopics(List<TopicInterface> l) {
-		int i=0;
-		String res="";
+		int i = 0;
+		String res = "";
 		for (TopicInterface topic : l)
-			res=res+i++ + ". " + topic.toString()+"/n";
+			res = res + i++ + ". " + topic.toString() + "/n";
 		return res;
+	}
+
+	public static List<NewsInterface> createNews(int n, TopicInterface topic, String text) {
+		List<NewsInterface> l = new LinkedList<NewsInterface>();
+		for (int i = 0; i < n; ++i)
+			l.add(new News(topic, text + i));
+		return l;
+	}
+	public static <T>boolean listsAreEqual(List<T> l1, List<T> l2) {
+		if(l1.size()!=l2.size()) return false;
+		for(T obj:l1)
+			if(!l2.contains(obj)) return false;
+		return true;
 	}
 }

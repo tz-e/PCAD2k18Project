@@ -19,6 +19,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -169,16 +170,25 @@ public class Client implements ClientInterface {
 	}
 
 	@Override
-	public FutureTask<Integer> ReadNews() throws RemoteException, NotConnectedException {
+	public FutureTask<List<NewsInterface>> ReadNews() throws RemoteException, NotConnectedException {
 		notConnected();
 		if (thr != null)
 			thr.interrupt();
-		FutureTask<Integer> task=new FutureTask<Integer>(new Reader(NewsToRead));
+		FutureTask<List<NewsInterface>> task=new FutureTask<List<NewsInterface>>(new Reader(NewsToRead));
 		thr = new Thread(task);
 		thr.start();
 		return task;
 	}
+	
+	@Override
+	public void stopReadNews() throws RemoteException, NotConnectedException {
+		notConnected();
 
+		if(thr!=null) {
+			thr.interrupt();
+			thr=null;
+		}
+	}
 	@Override
 	public int hashCode() {
 		return 11 * NewsToRead.hashCode();
@@ -205,4 +215,6 @@ public class Client implements ClientInterface {
 		if (!connected)
 			throw new NotConnectedException();
 	}
+
+	
 }

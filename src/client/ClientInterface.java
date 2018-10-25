@@ -3,6 +3,7 @@ package client;
 import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.concurrent.FutureTask;
 
 import broker.PCADBrokerInterface;
@@ -31,8 +32,9 @@ public interface ClientInterface extends SubInterface, Remote, Serializable {
 
 	public void notifyClient(NewsInterface news) throws RemoteException;
 
-	public FutureTask<Integer> ReadNews() throws RemoteException, NotConnectedException;
+	public FutureTask<List<NewsInterface>> ReadNews() throws RemoteException, NotConnectedException;
 
+	public void stopReadNews() throws RemoteException, NotConnectedException;
 
 	public void Connect(PCADBrokerInterface server) throws RemoteException, SubscriberAlreadyConnectedException, AlreadyConnectedException;
 

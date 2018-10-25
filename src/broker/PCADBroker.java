@@ -23,7 +23,7 @@ public class PCADBroker implements PCADBrokerInterface {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private MySet<SubInterface> alt;
+	//private MySet<SubInterface> alt;
 	// private ConcurrentHashMap<SubInterface, Boolean> subList;
 	private ConcurrentHashMap<TopicInterface, MySet<SubInterface>> subscribers;
 

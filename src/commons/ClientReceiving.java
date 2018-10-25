@@ -1,6 +1,7 @@
 package commons;
 
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -15,7 +16,7 @@ import exceptions.NotConnectedException;
 import exceptions.SubscriberAlreadyConnectedException;
 import exceptions.SubscriberAlreadySubbedException;
 
-public class ClientReceiving<Integer> implements Callable {
+public class ClientReceiving implements Callable<List<NewsInterface>> {
 	private String clientName;
 	private String myIp;
 	private String serverIp;
@@ -32,16 +33,16 @@ public class ClientReceiving<Integer> implements Callable {
 		t=topic;
 	}
 	@Override
-	public Integer call() {
+	public List<NewsInterface> call() {
 		
 		ClientInterface client=new Client(myIp, serverIp, serverName, port);
-		FutureTask<Integer> th;
+		FutureTask<List<NewsInterface>> th;
 		try {
 			client.Connect();
 			for(TopicInterface topic:t) {
 				client.Subscribe(topic);	
 			}
-			th=(FutureTask<Integer>) client.ReadNews();
+			th=(FutureTask<List<NewsInterface>>) client.ReadNews();
 			//System.out.println("disconnected");
 			
 
@@ -66,8 +67,7 @@ public class ClientReceiving<Integer> implements Callable {
 			return null;
 		} 
 		try {
-			Integer res= th.get();
-			//client.Disconnect();//ritorno il numero di news ricevute
+			List<NewsInterface> res= th.get();
 			System.out.println("Letture terminate da "+ clientName);
 			return res;
 		} catch (InterruptedException e) {

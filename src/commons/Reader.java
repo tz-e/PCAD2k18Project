@@ -1,26 +1,30 @@
 package commons;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Reader che ha come scopo quello di leggere il contenuto di una coda ogni
- * tot secondi e stamparne il contenuto
+ * Reader che ha come scopo quello di leggere il contenuto di una coda ogni tot
+ * secondi e stamparne il contenuto
  * 
  * @author Daniele Atzeni
  **/
-public class Reader implements Callable<Integer> {
+public class Reader implements Callable<List<NewsInterface>> {
 	private final LinkedBlockingQueue<NewsInterface> queue;
 	private volatile boolean running;
+	List<NewsInterface> l;
 
 	public Reader(LinkedBlockingQueue<NewsInterface> q) {
 		running = false;
 		queue = q;
+		l = new LinkedList<NewsInterface>();
 	}
+
 	@Override
-	public Integer call() {
-		int i=0;
+	public List<NewsInterface> call() {
 		running = true;
 
 		try {
@@ -30,12 +34,14 @@ public class Reader implements Callable<Integer> {
 			long last = System.currentTimeMillis() / 1000;
 			while ((System.currentTimeMillis() / 1000) - last < 30 && running) {// se non leggo niente per un minuto
 																				// esco dal ciclo
-				//System.out.println("Current " + System.currentTimeMillis() / 1000 + " Last: " + last);
+				// System.out.println("Current " + System.currentTimeMillis() / 1000 + " Last: "
+				// + last);
 				Thread.sleep(5);
 				while (!queue.isEmpty()) {
 					NewsInterface n = queue.take();
-					i++;
-					last = System.currentTimeMillis() / 1000; // mi salvo il tempo dell'ultima volta che ho letto qualcosa
+					l.add(n);
+					last = System.currentTimeMillis() / 1000; // mi salvo il tempo dell'ultima volta che ho letto
+																// qualcosa
 					System.err.println("Topic: " + n.GetTopic() + "\\n Testo: " + n.GetText());
 				}
 
@@ -44,13 +50,13 @@ public class Reader implements Callable<Integer> {
 			ex.printStackTrace();
 			return null;
 		}
-		System.out.println("Ho letto "+i+" news");
+		System.out.println("Ho letto " + l.size() + " news");
 		stopThread();
-		return i;
-	}
-	public void stopThread() {
-		running=false;
+		return l;
 	}
 
+	public void stopThread() {
+		running = false;
+	}
 
 }
